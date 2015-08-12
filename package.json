@@ -1,0 +1,14 @@
+{
+  "name": "ngsecurity",
+  "version": "0.1.0",
+  "description": "A security framework for AngularJS.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Porto <patrick.porto@concretesolutions.com.br>",
+  "license": "MIT"
+}
