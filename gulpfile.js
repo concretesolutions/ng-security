@@ -1,6 +1,7 @@
 'use strict';
 var gulp = require('gulp'),
-    jshint = require('gulp-jshint');
+    jshint = require('gulp-jshint'),
+    karma = require('karma').server;
 
 gulp.task('lint', function () {
   return gulp.src('./src/*.js')
@@ -8,6 +9,11 @@ gulp.task('lint', function () {
     .pipe(jshint.reporter('default'))
 });
 
-gulp.task('test', ['lint'], function () {
-
+gulp.task('test', ['lint'], function (done) {
+  karma.start({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, function () {
+    done();
+  });
 });
