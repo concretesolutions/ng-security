@@ -4,6 +4,8 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     frameworks: ['mocha', 'chai'],
     files: [
+      'bower_components/angular/angular.js',
+      'bower_components/angular-mocks/angular-mocks.js',
       'src/*.js',
       'tests/*.js'
     ],

@@ -22,5 +22,9 @@
     "karma-phantomjs-launcher": "^0.2.1",
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.18"
+  },
+  "dependencies": {
+    "angular": "^1.4.3",
+    "angular-mocks": "^1.4.3"
   }
 }

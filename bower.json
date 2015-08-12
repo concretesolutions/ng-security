@@ -11,5 +11,9 @@
     "node_modules",
     "bower_components",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "angular": "~1.4.3",
+    "angular-mocks": "~1.4.3"
+  }
 }
