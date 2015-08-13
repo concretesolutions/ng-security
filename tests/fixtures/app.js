@@ -1,5 +1,5 @@
-(function (ng) {
-  'use strict';
+'use strict';
 
-  ng.module('app', []);
-})(angular);
+angular.module('app', [
+  'ngSecurity'
+]);
