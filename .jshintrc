@@ -25,7 +25,10 @@
   "undef": true,
   "unused": "vars",
   "strict": true,
+  "mocha": true,
+  "expr": true,
   "globals": {
-    "angular": false
+    "angular": false,
+    "assert": false
   }
 }
