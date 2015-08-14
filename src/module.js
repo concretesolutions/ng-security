@@ -1,3 +1,5 @@
 'use strict';
 
-angular.module('ngSecurity', []);
+angular.module('ngSecurity', [
+  'ngCookies'
+]);

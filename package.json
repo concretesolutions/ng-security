@@ -27,7 +27,8 @@
     "phantomjs": "^1.9.18"
   },
   "dependencies": {
-    "angular": "^1.4.3",
-    "angular-mocks": "^1.4.3"
+    "angular": "^1.4.4",
+    "angular-cookies": "^1.4.4",
+    "angular-mocks": "^1.4.4"
   }
 }

@@ -29,6 +29,7 @@
   "expr": true,
   "globals": {
     "angular": false,
-    "assert": false
+    "assert": false,
+    "inject": false
   }
 }
