@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('ngSecurity')
   .factory('$security', securityFactory);

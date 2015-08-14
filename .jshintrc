@@ -24,7 +24,7 @@
   "quotmark": "single",
   "undef": true,
   "unused": "vars",
-  "strict": true,
+  "strict": false,
   "mocha": true,
   "expr": true,
   "globals": {
