@@ -23,10 +23,21 @@ gulp.task('test', ['lint'], function (done) {
 });
 
 gulp.task('dist', function () {
+  var header = [
+    '/*',
+    ' ' + config.name + ' v' + config.version,
+    ' ' + config.copyright,
+    ' License: ' + config.license,
+    '*/'
+  ].join('\n');
   return gulp.src('./src/*.js')
     .pipe(concat(config.name + '.js'))
     .pipe(wrapper({
-      header: '"use strict";\n(function () {\n',
+      header: [
+        header,
+        '\'use strict\';',
+        '(function () {',
+      ].join('\n'),
       footer: '}).call(window);'
     }))
     .pipe(gulp.dest('dist'))
@@ -38,7 +49,7 @@ gulp.task('dist', function () {
         language_in: 'ECMASCRIPT5_STRICT',
         create_source_map: './dist/' + config.name + '.min.js.map',
         source_map_format: 'V3',
-        output_wrapper: '//# sourceMappingURL=' + config.name + '.min.js.map\n%output%'
+        output_wrapper: header + '\n//# sourceMappingURL=' + config.name + '.min.js.map\n%output%'
       }
     }))
     .pipe(gulp.dest('dist'));
