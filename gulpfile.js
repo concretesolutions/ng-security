@@ -34,7 +34,11 @@ gulp.task('dist', function () {
       compilerPath: 'node_modules/closure-compiler/lib/vendor/compiler.jar',
       fileName: config.name + '.min.js',
       compilerFlags: {
-        language_in: 'ECMASCRIPT5_STRICT'
+        /*jshint camelcase: false */
+        language_in: 'ECMASCRIPT5_STRICT',
+        create_source_map: './dist/' + config.name + '.min.js.map',
+        source_map_format: 'V3',
+        output_wrapper: '//# sourceMappingURL=' + config.name + '.min.js.map\n%output%'
       }
     }))
     .pipe(gulp.dest('dist'));
