@@ -1,6 +1,6 @@
 'use strict';
 
-describe('securityService', function () {
+describe('Service:security', function () {
   beforeEach(module('ngSecurity'));
   var $cookies,
       $security;
