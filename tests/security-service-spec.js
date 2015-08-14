@@ -23,4 +23,14 @@ describe('securityService', function () {
 
     assert.equal($cookies.getObject('ng-security-user').name, 'Patrick Porto');
   });
+
+  it('should logout user', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    });
+    $security.logout();
+
+    assert.isUndefined($cookies.get('ng-security-authorization'));
+    assert.isUndefined($cookies.get('ng-security-user'));
+  });
 });
