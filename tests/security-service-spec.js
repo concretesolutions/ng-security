@@ -18,7 +18,10 @@ describe('Service:security', function () {
       token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
       user: {
         name: 'Patrick Porto'
-      }
+      },
+      permissions: [
+        'admin'
+      ]
     });
 
     $cookies.remove('ng-security-authorization');
@@ -60,6 +63,7 @@ describe('Service:security', function () {
 
     assert.equal($cookies.get('ng-security-authorization'), 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
     assert.equal($cookies.getObject('ng-security-user').name, 'Patrick Porto');
+    assert.include($cookies.getObject('ng-security-permissions'), 'admin');
   });
 
   it('should logout user', function () {

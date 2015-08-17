@@ -30,7 +30,7 @@ function securityFactory ($cookies, $q, $http) {
   function loginByUrl (url, data) {
     return $q(function (resolve, reject) {
       $http.post(url, data).success(function (data) {
-        security.login(data.token, data.user);
+        security.login(data.token, data.user, data.permissions);
         resolve(data);
       }).error(reject);
     });
