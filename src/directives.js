@@ -137,10 +137,19 @@ function enabledPermission ($security) {
 
   /** implementation */
   function link (scope, element, attrs) {
+    var permissionType = attrs.ngPermissionType,
+        validations = {
+          'ANY': $security.hasAnyPermission,
+          'ALL': $security.hasAllPermission
+        };
+    if (!validations[permissionType]) {
+      permissionType = 'ANY';
+    }
     scope.$watch(function () {
       return attrs.ngEnabledPermission;
     }, function (permission) {
-      if ($security.hasPermission(permission)) {
+      var permissions = permission.split(',');
+      if (validations[permissionType](permissions)) {
         element.removeAttr('disabled');
       } else {
         element.attr('disabled', 'true');

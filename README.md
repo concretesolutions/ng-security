@@ -138,7 +138,7 @@ angular
 ```
 
 #### ng-permission-type="ALL|ANY" (Attribute only)  ####
-The auxiliary directive for *ng-if-permission* and *ng-if-permission-model*, it determine the validation method.  
+The auxiliary directive for *ng-if-permission*, *ng-if-permission-model* and *ng-enabled-permission*, it determine the validation method.  
 The value default is *ANY*.
 ```html
 <div ng-if-permission="admin,staff" ng-permission-type="ANY">
@@ -153,7 +153,10 @@ The value default is *ANY*.
 The directive sets the disabled attribute on the HTML element if user has permission.  
 
 ```html
-<button ng-enabled-permission="admin">
+<button ng-enabled-permission="admin,staff">
   Add User
-</button
+</button>
+<button ng-enabled-permission="admin">
+  Remove User
+</button>
 ```
