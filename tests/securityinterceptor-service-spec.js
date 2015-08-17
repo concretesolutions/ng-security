@@ -19,4 +19,14 @@ describe('Service:securityInterceptor', function () {
     $rootScope.$digest();
     rootScopeOn.calledWith('unauthenticated').should.be.ok;
   });
+
+  it('should broadcast permission problem', function () {
+    var rejection = {
+      status: 403
+    };
+    var rootScopeOn = sinon.spy($rootScope, '$broadcast');
+    $securityInterceptor.responseError(rejection);
+    $rootScope.$digest();
+    rootScopeOn.calledWith('permissionDenied').should.be.ok;
+  });
 });

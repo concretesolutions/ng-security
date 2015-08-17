@@ -47,8 +47,12 @@ function securityInterceptor ($rootScope, $q) {
 
   /** implementation */
   function responseError (response) {
-    if (response.status === 401) {
-      $rootScope.$broadcast('unauthenticated', response);
+    var events = {
+      401: 'unauthenticated',
+      403: 'permissionDenied'
+    };
+    if (events[response.status]) {
+      $rootScope.$broadcast(events[response.status], response);
     }
     return $q.reject(response);
   }
