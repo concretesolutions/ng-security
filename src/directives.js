@@ -100,8 +100,8 @@ function ifPermissionModel ($cookies, $security, $parse) {
 
     scope.$watch(function () {
       return $parse(attrs.ngIfPermissionModel)(scope);
-    }, function (permission) {
-      if ($security.hasPermission(permission)) {
+    }, function (permissions) {
+      if ($security.hasPermission(permissions) || $security.hasAnyPermission(permissions)) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
