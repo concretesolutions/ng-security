@@ -2,7 +2,7 @@
 module.exports = function (config) {
   config.set({
     browsers: ['PhantomJS'],
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'sinon-chai'],
     reporters: ['mocha'],
     files: [
       'bower_components/angular/angular.js',

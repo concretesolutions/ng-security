@@ -30,6 +30,7 @@
   "globals": {
     "angular": false,
     "assert": false,
-    "inject": false
+    "inject": false,
+    "sinon": false
   }
 }

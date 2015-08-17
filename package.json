@@ -13,7 +13,6 @@
   "copyright": "(c) 2015 Concrete Solutions, Inc.",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^3.2.0",
     "closure-compiler": "^0.2.7",
     "gulp": "^3.9.0",
     "gulp-closure-compiler": "^0.3.0",
@@ -26,8 +25,10 @@
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.1",
     "karma-phantomjs-launcher": "^0.2.1",
+    "karma-sinon-chai": "^1.0.0",
     "mocha": "^2.2.5",
-    "phantomjs": "^1.9.18"
+    "phantomjs": "^1.9.18",
+    "sinon": "^1.15.4"
   },
   "dependencies": {
     "angular": "^1.4.4",
