@@ -65,4 +65,30 @@ describe('Directive:ifPermission', function () {
 
     assert.equal(element.css('display'), 'none');
   });
+
+  it('should show element if have admin and staff permission', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {}, ['admin', 'staff']);
+
+    var element = $compile([
+      '<div ng-if-permission="admin,staff" ng-permission-type="ALL">',
+      '</div>'
+    ].join())($rootScope);
+
+    $rootScope.$digest();
+
+    assert.equal(element.css('display'), '');
+  });
+
+  it('should hide element if not have admin and staff permission', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {}, ['admin']);
+
+    var element = $compile([
+      '<div ng-if-permission="admin,staff" ng-permission-type="ALL">',
+      '</div>'
+    ].join())($rootScope);
+
+    $rootScope.$digest();
+
+    assert.equal(element.css('display'), 'none');
+  });
 });
