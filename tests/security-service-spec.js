@@ -23,6 +23,7 @@ describe('Service:security', function () {
 
     $cookies.remove('ng-security-authorization');
     $cookies.remove('ng-security-user');
+    $cookies.remove('ng-security-permissions');
   }));
 
   it('should authenticate without user object', function () {
@@ -69,5 +70,16 @@ describe('Service:security', function () {
 
     assert.isUndefined($cookies.get('ng-security-authorization'));
     assert.isUndefined($cookies.get('ng-security-user'));
+  });
+
+  it('should verify if user has permission', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    }, [
+      'staff'
+    ]);
+
+    assert.isFalse($security.hasPermission('admin'), 'user is admin');
+    assert.isTrue($security.hasPermission('staff'), 'user is staff');
   });
 });
