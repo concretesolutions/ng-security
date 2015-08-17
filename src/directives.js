@@ -6,7 +6,7 @@ angular
 
 ifAuthenticated.$inject = ['$cookies'];
 ifAnonymous.$inject = ['$cookies'];
-ifPermission.$inject = ['$cookies'];
+ifPermission.$inject = ['$cookies', '$security'];
 
 function ifAuthenticated ($cookies) {
   /** interface */
@@ -56,7 +56,7 @@ function ifAnonymous ($cookies) {
   }
 }
 
-function ifPermission ($cookies) {
+function ifPermission ($cookies, $security) {
   /** interface */
   var directive = {
     link: link,
@@ -68,25 +68,11 @@ function ifPermission ($cookies) {
   /** implementation */
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display');
-    var hasPermission = function (permissionsRequired) {
-      var permissions = $cookies.getObject('ng-security-permissions'),
-          exists = false;
-      angular.forEach(permissionsRequired, function (permission) {
-        if (permissions.indexOf(permission) !== -1) {
-          exists = true;
-        }
-      });
-      return exists;
-    };
 
     scope.$watch(function () {
       return attrs.ngIfPermission;
     }, function (permission) {
-      if (angular.isDefined(permission)) {
-        permission = permission.split(',');
-      }
-      console.log(permission)
-      if (hasPermission(permission)) {
+      if ($security.hasPermission(permission)) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
