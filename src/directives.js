@@ -3,11 +3,13 @@ angular
   .directive('ngIfAuthenticated', ifAuthenticated)
   .directive('ngIfAnonymous', ifAnonymous)
   .directive('ngIfPermission', ifPermission)
+  .directive('ngIfPermissionModel', ifPermissionModel)
   .directive('ngIfAnyPermission', ifAnyPermission);
 
 ifAuthenticated.$inject = ['$cookies'];
 ifAnonymous.$inject = ['$cookies'];
 ifPermission.$inject = ['$cookies', '$security'];
+ifPermissionModel.$inject = ['$cookies', '$security', '$parse'];
 ifAnyPermission.$inject = ['$cookies', '$security'];
 
 function ifAuthenticated ($cookies) {
@@ -73,6 +75,31 @@ function ifPermission ($cookies, $security) {
 
     scope.$watch(function () {
       return attrs.ngIfPermission;
+    }, function (permission) {
+      if ($security.hasPermission(permission)) {
+        element.css('display', defaultStyle);
+      } else {
+        element.css('display', 'none');
+      }
+    });
+  }
+}
+
+function ifPermissionModel ($cookies, $security, $parse) {
+  /** interface */
+  var directive = {
+    link: link,
+    restrict: 'A'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs) {
+    var defaultStyle = element.css('display');
+
+    scope.$watch(function () {
+      return $parse(attrs.ngIfPermissionModel)(scope);
     }, function (permission) {
       if ($security.hasPermission(permission)) {
         element.css('display', defaultStyle);
