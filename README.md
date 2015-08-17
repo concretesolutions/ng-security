@@ -82,6 +82,9 @@ User logout and remove session user data.
 #### hasPermission(permission: String) ####
 Check if user has permission.  
 
+#### hasAllPermission(permissions: Array) ####
+Check if user has all permission of array.  
+
 #### hasAnyPermission(permissions: Array) ####
 Check if user has any permission of array.  
 

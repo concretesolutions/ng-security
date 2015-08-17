@@ -100,6 +100,30 @@ describe('Service:security', function () {
     ]));
   });
 
+  it('should verify if user has admin and staff permission', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    }, [
+      'staff',
+      'admin'
+    ]);
+
+    assert.isFalse($security.hasAllPermission([
+      'staff',
+      'admin',
+      'root'
+    ]));
+
+    assert.isTrue($security.hasAllPermission([
+      'staff',
+      'admin'
+    ]));
+
+    assert.isTrue($security.hasAllPermission([
+      'staff'
+    ]));
+  });
+
   it('should verify if user is authenticated', function () {
     assert.isFalse($security.isAuthenticated());
 
