@@ -4,13 +4,15 @@ angular
   .directive('ngIfAnonymous', ifAnonymous)
   .directive('ngIfPermission', ifPermission)
   .directive('ngIfPermissionModel', ifPermissionModel)
-  .directive('ngIfAnyPermission', ifAnyPermission);
+  .directive('ngIfAnyPermission', ifAnyPermission)
+  .directive('ngEnabledPermission', enabledPermission);
 
 ifAuthenticated.$inject = ['$security'];
 ifAnonymous.$inject = ['$security'];
 ifPermission.$inject = ['$security'];
 ifPermissionModel.$inject = ['$security', '$parse'];
 ifAnyPermission.$inject = ['$security'];
+enabledPermission.$inject = ['$security'];
 
 function ifAuthenticated ($security) {
   /** interface */
@@ -131,6 +133,29 @@ function ifAnyPermission ($security) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
+      }
+    });
+  }
+}
+
+function enabledPermission ($security) {
+  /** interface */
+  var directive = {
+    link: link,
+    restrict: 'A'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs) {
+    scope.$watch(function () {
+      return attrs.ngEnabledPermission;
+    }, function (permission) {
+      if ($security.hasPermission(permission)) {
+        element.removeAttr('disabled');
+      } else {
+        element.attr('disabled', 'true');
       }
     });
   }

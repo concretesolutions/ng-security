@@ -139,3 +139,12 @@ angular
   </div>
 </div>
 ```
+
+#### ng-enabled-permission="<permission: String>" (Attribute only)  ####
+The directive sets the disabled attribute on the HTML element if user has permission.  
+
+```html
+<button ng-enabled-permission="admin">
+  Add User
+</button
+```
