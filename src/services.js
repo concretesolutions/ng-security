@@ -12,7 +12,8 @@ function securityFactory ($cookies, $q, $http) {
     login: login,
     loginByUrl: loginByUrl,
     logout: logout,
-    hasPermission: hasPermission
+    hasPermission: hasPermission,
+    hasAnyPermission: hasAnyPermission
   };
 
   return security;
@@ -38,11 +39,15 @@ function securityFactory ($cookies, $q, $http) {
     $cookies.remove('ng-security-user');
   }
 
-  function hasPermission (permissionsRequired) {
+  function hasPermission (permissionRequired) {
+    var permissions = $cookies.getObject('ng-security-permissions');
+    return permissions.indexOf(permissionRequired) !== -1;
+  }
+
+  function hasAnyPermission (permissionsRequired) {
     var permissions = $cookies.getObject('ng-security-permissions'),
         exists = false;
     if (angular.isDefined(permissionsRequired)) {
-      permissionsRequired = permissionsRequired.split(',');
       angular.forEach(permissionsRequired, function (permission) {
         if (permissions.indexOf(permission) !== -1) {
           exists = true;

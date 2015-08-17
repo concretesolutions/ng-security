@@ -82,4 +82,17 @@ describe('Service:security', function () {
     assert.isFalse($security.hasPermission('admin'), 'user is admin');
     assert.isTrue($security.hasPermission('staff'), 'user is staff');
   });
+
+  it('should verify if user has admin or staff permission', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    }, [
+      'staff'
+    ]);
+
+    assert.isTrue($security.hasAnyPermission([
+      'staff',
+      'admin'
+    ]));
+  });
 });
