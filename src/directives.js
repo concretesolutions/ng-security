@@ -6,13 +6,13 @@ angular
   .directive('ngIfPermissionModel', ifPermissionModel)
   .directive('ngIfAnyPermission', ifAnyPermission);
 
-ifAuthenticated.$inject = ['$cookies'];
-ifAnonymous.$inject = ['$cookies'];
-ifPermission.$inject = ['$cookies', '$security'];
-ifPermissionModel.$inject = ['$cookies', '$security', '$parse'];
-ifAnyPermission.$inject = ['$cookies', '$security'];
+ifAuthenticated.$inject = ['$security'];
+ifAnonymous.$inject = ['$security'];
+ifPermission.$inject = ['$security'];
+ifPermissionModel.$inject = ['$security', '$parse'];
+ifAnyPermission.$inject = ['$security'];
 
-function ifAuthenticated ($cookies) {
+function ifAuthenticated ($security) {
   /** interface */
   var directive = {
     link: link,
@@ -25,9 +25,9 @@ function ifAuthenticated ($cookies) {
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display');
     scope.$watch(function () {
-      return $cookies.get('ng-security-authorization');
+      return $security.isAuthenticated();
     }, function (authorization) {
-      if (angular.isDefined(authorization)) {
+      if (authorization) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
@@ -36,7 +36,7 @@ function ifAuthenticated ($cookies) {
   }
 }
 
-function ifAnonymous ($cookies) {
+function ifAnonymous ($security) {
   /** interface */
   var directive = {
     link: link,
@@ -49,9 +49,9 @@ function ifAnonymous ($cookies) {
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display');
     scope.$watch(function () {
-      return $cookies.get('ng-security-authorization');
+      return $security.isAuthenticated();
     }, function (authorization) {
-      if (angular.isDefined(authorization)) {
+      if (authorization) {
         element.css('display', 'none');
       } else {
         element.css('display', defaultStyle);
@@ -60,7 +60,7 @@ function ifAnonymous ($cookies) {
   }
 }
 
-function ifPermission ($cookies, $security) {
+function ifPermission ($security) {
   /** interface */
   var directive = {
     link: link,
@@ -85,7 +85,7 @@ function ifPermission ($cookies, $security) {
   }
 }
 
-function ifPermissionModel ($cookies, $security, $parse) {
+function ifPermissionModel ($security, $parse) {
   /** interface */
   var directive = {
     link: link,
@@ -110,7 +110,7 @@ function ifPermissionModel ($cookies, $security, $parse) {
   }
 }
 
-function ifAnyPermission ($cookies, $security) {
+function ifAnyPermission ($security) {
   /** interface */
   var directive = {
     link: link,
