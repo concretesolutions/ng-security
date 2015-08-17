@@ -4,7 +4,7 @@ angular
   .factory('$securityInterceptor', securityInterceptor);
 
 securityFactory.$inject = ['$cookies', '$q', '$http'];
-securityInterceptor.$inject = ['$rootScope', '$q'];
+securityInterceptor.$inject = ['$rootScope', '$q', '$cookies'];
 
 function securityFactory ($cookies, $q, $http) {
   /** interface */
@@ -37,15 +37,21 @@ function securityFactory ($cookies, $q, $http) {
   }
 }
 
-function securityInterceptor ($rootScope, $q) {
+function securityInterceptor ($rootScope, $q, $cookies) {
   /** interface */
   var interceptor = {
+    request: request,
     responseError: responseError
   };
 
   return interceptor;
 
   /** implementation */
+  function request (config) {
+    config.headers.Authorization = $cookies.get('ng-security-authorization');
+    return config;
+  }
+
   function responseError (response) {
     var events = {
       401: 'unauthenticated',
