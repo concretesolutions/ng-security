@@ -17,5 +17,9 @@ $ npm install ngsecurity
 ## Get Started ##
 Your setup should look similar to the following:
 ```javascript
-angular.module('myApp', ['ngSecurity']);
+angular
+  .module('myApp', ['ngSecurity'])
+  .config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.interceptors.push('$securityInterceptor');
+  }]);
 ```

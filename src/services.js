@@ -1,8 +1,10 @@
 angular
   .module('ngSecurity')
-  .factory('$security', securityFactory);
+  .factory('$security', securityFactory)
+  .factory('$securityInterceptor', securityInterceptor);
 
 securityFactory.$inject = ['$cookies', '$q', '$http'];
+securityInterceptor.$inject = ['$rootScope', '$q'];
 
 function securityFactory ($cookies, $q, $http) {
   /** interface */
@@ -32,5 +34,22 @@ function securityFactory ($cookies, $q, $http) {
   function logout () {
     $cookies.remove('ng-security-authorization');
     $cookies.remove('ng-security-user');
+  }
+}
+
+function securityInterceptor ($rootScope, $q) {
+  /** interface */
+  var interceptor = {
+    responseError: responseError
+  };
+
+  return interceptor;
+
+  /** implementation */
+  function responseError (response) {
+    if (response.status === 401) {
+      $rootScope.$broadcast('unauthenticated', response);
+    }
+    return $q.reject(response);
   }
 }
