@@ -3,10 +3,10 @@ angular
   .directive('ngIfAuthenticated', ifAuthenticated)
   .directive('ngIfAnonymous', ifAnonymous);
 
-ifAuthenticated.$inject = ['$cookies', '$timeout'];
-ifAnonymous.$inject = ['$cookies', '$timeout'];
+ifAuthenticated.$inject = ['$cookies'];
+ifAnonymous.$inject = ['$cookies'];
 
-function ifAuthenticated ($cookies, $timeout) {
+function ifAuthenticated ($cookies) {
   /** interface */
   var directive = {
     link: link,
@@ -30,7 +30,7 @@ function ifAuthenticated ($cookies, $timeout) {
   }
 }
 
-function ifAnonymous ($cookies, $timeout) {
+function ifAnonymous ($cookies) {
   /** interface */
   var directive = {
     link: link,
