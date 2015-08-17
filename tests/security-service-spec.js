@@ -39,6 +39,16 @@ describe('Service:security', function () {
     assert.equal($cookies.getObject('ng-security-user').name, 'Patrick Porto');
   });
 
+  it('should authenticate with permissions', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    }, [
+      'admin'
+    ]);
+
+    assert.include($cookies.getObject('ng-security-permissions'), 'admin');
+  });
+
   it('should authenticate by web service', function () {
     $security.loginByUrl('/api/auth', {
       username: 'admin',

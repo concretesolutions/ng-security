@@ -17,9 +17,10 @@ function securityFactory ($cookies, $q, $http) {
   return security;
 
   /** implementation */
-  function login (token, user) {
+  function login (token, user, permissions) {
     $cookies.put('ng-security-authorization', token);
     $cookies.putObject('ng-security-user', user);
+    $cookies.putObject('ng-security-permissions', permissions);
   }
 
   function loginByUrl (url, data) {
