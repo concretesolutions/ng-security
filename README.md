@@ -23,3 +23,119 @@ angular
     $httpProvider.interceptors.push('$securityInterceptor');
   }]);
 ```
+
+### Service Methods ###
+#### login(token: String, [user: Object, [permissions: Array]]) ####
+Authenticate a user with token. Data and permissions are additional.  
+
+```javascript
+angular
+  .module('myApp')
+  .controller(['$scope', '$http', '$security', function ($scope, $http, $security) {
+    $scope.username = 'admin';
+    $scope.password = 'admin';
+    $scope.authenticate = function () {
+      $http.post('/api/auth', {
+        username: $scope.username,
+        password: $scope.password
+      }).success(function (data) {
+        $security.login(data.token, data.user, data.permissions);
+      });
+    }
+  }]);
+```
+
+#### loginByUrl(url: String, data: Object) ####
+Use resource for authenticate user. The service should return a response compatible. The return is a promise.  
+
+```javascript
+angular
+  .module('myApp')
+  .controller(['$scope', '$security', function ($scope, $security) {
+    $scope.username = 'admin';
+    $scope.password = 'admin';
+    $scope.authenticate = function () {
+      $security.loginByUrl('/api/auth', {
+        username: $scope.username,
+        password: $scope.password
+      }));
+    }
+  }]);
+```
+Compatible response:  
+
+```javascript
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",  /* required */
+  "user": {  /* optional */
+    "name": 'Administrator'
+  },
+  "permissions": [  /* optional */
+    'admin'
+  ]
+}
+```
+
+#### logout() ####
+User logout and remove session user data.  
+
+#### hasPermission(permission: String) ####
+Check if user has permission.  
+
+#### hasAnyPermission(permissions: Array) ####
+Check if user has any permission of array.  
+
+#### isAuthenticated() ####
+Check if user is authenticated.  
+
+#### getUser() ####
+Get session user data.  
+
+### Directives ###
+
+#### ng-if-authenticated (Attribute only)  ####
+The directive only shows the HTML element if user is authenticated.
+
+#### ng-if-anonymous (Attribute only)  ####
+The directive only shows the HTML element if user not is authenticated.
+
+#### ng-if-permission="<permission: String>" (Attribute only)  ####
+The directive only shows the HTML element if user has permission.  
+
+```html
+<div ng-if-permission="admin">
+  <p>Admin</p>
+</div>
+```
+
+#### ng-if-any-permission="<permission: String>" (Attribute only)  ####
+The directive only shows the HTML element if user has any permisssion of list. The list is delimited by ",".  
+
+```html
+<div ng-if-any-permission="admin,staff">
+  <p>Admin or Staff</p>
+</div>
+```
+
+#### ng-if-permission-model="<permission: Any>" (Attribute only)  ####
+The directive only shows the HTML element if user has permission specified on scope.  
+
+```javascript
+angular
+  .module('myApp')
+  .controller(['$scope', '$security', function ($scope, $security) {
+    $scope.allPermission = [
+      'admin',
+      'staff'
+    ];
+    $scope.adminPermission = 'admin';
+  }]);
+```
+```html
+<div ng-if-permission-model="allPermission">
+  <p>Admin or Staff</p>
+  <div ng-if-permission-model="adminPermission">
+    Admin
+  </div>
+</div>
+```
