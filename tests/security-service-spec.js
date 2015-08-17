@@ -103,4 +103,12 @@ describe('Service:security', function () {
 
     assert.isTrue($security.isAuthenticated());
   });
+
+  it('should provide user info', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    });
+
+    assert.equal($security.getUser().name, 'Patrick Porto');
+  });
 });
