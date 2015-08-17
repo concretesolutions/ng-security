@@ -68,11 +68,25 @@ function ifPermission ($cookies) {
   /** implementation */
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display');
+    var hasPermission = function (permissionsRequired) {
+      var permissions = $cookies.getObject('ng-security-permissions'),
+          exists = false;
+      angular.forEach(permissionsRequired, function (permission) {
+        if (permissions.indexOf(permission) !== -1) {
+          exists = true;
+        }
+      });
+      return exists;
+    };
+
     scope.$watch(function () {
       return attrs.ngIfPermission;
     }, function (permission) {
-      var permissions = $cookies.getObject('ng-security-permissions');
-      if (permissions.indexOf(permission) !== -1) {
+      if (angular.isDefined(permission)) {
+        permission = permission.split(',');
+      }
+      console.log(permission)
+      if (hasPermission(permission)) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
