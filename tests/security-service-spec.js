@@ -95,4 +95,12 @@ describe('Service:security', function () {
       'admin'
     ]));
   });
+
+  it('should verify if user is authenticated', function () {
+    assert.isFalse($security.isAuthenticated());
+
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
+
+    assert.isTrue($security.isAuthenticated());
+  });
 });

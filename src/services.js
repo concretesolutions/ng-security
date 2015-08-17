@@ -13,7 +13,8 @@ function securityFactory ($cookies, $q, $http) {
     loginByUrl: loginByUrl,
     logout: logout,
     hasPermission: hasPermission,
-    hasAnyPermission: hasAnyPermission
+    hasAnyPermission: hasAnyPermission,
+    isAuthenticated: isAuthenticated
   };
 
   return security;
@@ -55,6 +56,10 @@ function securityFactory ($cookies, $q, $http) {
       });
     }
     return exists;
+  }
+
+  function isAuthenticated () {
+    return !!$cookies.get('ng-security-authorization');
   }
 }
 
