@@ -103,17 +103,11 @@ The directive only shows the HTML element if user not is authenticated.
 The directive only shows the HTML element if user has permission.  
 
 ```html
-<div ng-if-permission="admin">
-  <p>Admin</p>
-</div>
-```
-
-#### ng-if-any-permission="<permission: String>" (Attribute only)  ####
-The directive only shows the HTML element if user has any permisssion of list. The list is delimited by ",".  
-
-```html
-<div ng-if-any-permission="admin,staff">
+<div ng-if-permission="admin,staff">
   <p>Admin or Staff</p>
+  <div ng-if-permission="admin">
+    <p>Admin</p>
+  </div>
 </div>
 ```
 
