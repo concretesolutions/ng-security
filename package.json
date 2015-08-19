@@ -1,7 +1,7 @@
 {
   "name": "ngsecurity",
   "version": "1.0.1",
-  "description": "A security framework for AngularJS.",
+  "description": "A security module for AngularJS.",
   "main": "index.js",
   "directories": {
     "test": "tests"
