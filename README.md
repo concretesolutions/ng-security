@@ -1,6 +1,8 @@
 # ngSecurity #
 [![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-image]][npm-url] [![MIT License][license-image]][license-url]
 
+**In construction, use at your own risk**
+
 #### A security framework for [AngularJS](http://angularjs.org). ####
 
 ## Install ##
