@@ -7,7 +7,10 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "build": "gulp dist",
+    "prepublish": "npm run build",
+    "prebuild": "npm run test"
   },
   "author": "Patrick Porto <patrick.porto@concretesolutions.com.br>",
   "copyright": "(c) 2015 Concrete Solutions, Inc.",
