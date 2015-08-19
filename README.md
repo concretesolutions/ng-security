@@ -1,5 +1,6 @@
 # ngSecurity #
-[![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-image]][npm-url] [![MIT License][license-image]][license-url]
+
+[![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-image]][npm-url] [![MIT License][license-image]][license-url]  
 
 **In construction, use at your own risk**
 
@@ -162,3 +163,10 @@ The directive sets the disabled attribute on the HTML element if user has permis
   Remove User
 </button>
 ```
+
+[license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
+[license-url]: LICENSE
+
+[npm-url]: https://npmjs.org/package/ngsecurity
+[npm-version-image]: http://img.shields.io/npm/v/ngsecurity.svg?style=flat
+[npm-downloads-image]: http://img.shields.io/npm/dm/ngsecurity.svg?style=flat
