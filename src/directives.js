@@ -72,19 +72,12 @@ function ifPermission ($security) {
   /** implementation */
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display'),
-        permissionType = attrs.ngPermissionType,
-        validations = {
-          'ANY': $security.hasAnyPermission,
-          'ALL': $security.hasAllPermission
-        };
-    if (!validations[permissionType]) {
-      permissionType = 'ANY';
-    }
+        permissionType = attrs.ngPermissionType;
     scope.$watch(function () {
       return attrs.ngIfPermission;
     }, function (permission) {
       var permissions = permission.split(',');
-      if (validations[permissionType](permissions)) {
+      if ($security.getPermissionValidation(permissionType)(permissions)) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
@@ -105,19 +98,12 @@ function ifPermissionModel ($security, $parse) {
   /** implementation */
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display'),
-        permissionType = attrs.ngPermissionType,
-        validations = {
-          'ANY': $security.hasAnyPermission,
-          'ALL': $security.hasAllPermission
-        };
-    if (!validations[permissionType]) {
-      permissionType = 'ANY';
-    }
+        permissionType = attrs.ngPermissionType;
 
     scope.$watch(function () {
       return $parse(attrs.ngIfPermissionModel)(scope);
     }, function (permissions) {
-      if ($security.hasPermission(permissions) || validations[permissionType](permissions)) {
+      if ($security.hasPermission(permissions) || $security.getPermissionValidation(permissionType)(permissions)) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
@@ -137,19 +123,13 @@ function enabledPermission ($security) {
 
   /** implementation */
   function link (scope, element, attrs) {
-    var permissionType = attrs.ngPermissionType,
-        validations = {
-          'ANY': $security.hasAnyPermission,
-          'ALL': $security.hasAllPermission
-        };
-    if (!validations[permissionType]) {
-      permissionType = 'ANY';
-    }
+    var permissionType = attrs.ngPermissionType;
+
     scope.$watch(function () {
       return attrs.ngEnabledPermission;
     }, function (permission) {
       var permissions = permission.split(',');
-      if (validations[permissionType](permissions)) {
+      if ($security.getPermissionValidation(permissionType)(permissions)) {
         element.removeAttr('disabled');
       } else {
         element.attr('disabled', 'true');

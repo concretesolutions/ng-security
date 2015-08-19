@@ -15,6 +15,7 @@ function securityFactory ($cookies, $q, $http) {
     hasPermission: hasPermission,
     hasAllPermission: hasAllPermission,
     hasAnyPermission: hasAnyPermission,
+    getPermissionValidation: getPermissionValidation,
     isAuthenticated: isAuthenticated,
     getUser: getUser
   };
@@ -73,6 +74,17 @@ function securityFactory ($cookies, $q, $http) {
       });
     }
     return exists;
+  }
+
+  function getPermissionValidation (permissionType) {
+    var validations = {
+      'ANY': security.hasAnyPermission,
+      'ALL': security.hasAllPermission
+    };
+    if (!permissionType) {
+      permissionType = 'ANY';
+    }
+    return validations[permissionType];
   }
 
   function isAuthenticated () {
