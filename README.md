@@ -102,7 +102,7 @@ The directive only shows the HTML element if user is authenticated.
 #### ng-if-anonymous (Attribute only)  ####
 The directive only shows the HTML element if user not is authenticated.
 
-#### ng-if-permission="<permission: String>" (Attribute only)  ####
+#### ng-if-permission="\<permission: String\>" (Attribute only)  ####
 The directive only shows the HTML element if user has permission.  
 
 ```html
@@ -114,7 +114,7 @@ The directive only shows the HTML element if user has permission.
 </div>
 ```
 
-#### ng-if-permission-model="<permission: Any>" (Attribute only)  ####
+#### ng-if-permission-model="\<permission: Any\>" (Attribute only)  ####
 The directive only shows the HTML element if user has permission specified on scope.  
 
 ```javascript
@@ -149,7 +149,7 @@ The value default is *ANY*.
 </div>
 ```
 
-#### ng-enabled-permission="<permission: String>" (Attribute only)  ####
+#### ng-enabled-permission="\<permission: String\>" (Attribute only)  ####
 The directive sets the disabled attribute on the HTML element if user has permission.  
 
 ```html
