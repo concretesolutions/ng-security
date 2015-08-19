@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start karma.conf.js"
+    "test": "gulp test"
   },
   "author": "Patrick Porto <patrick.porto@concretesolutions.com.br>",
   "copyright": "(c) 2015 Concrete Solutions, Inc.",
