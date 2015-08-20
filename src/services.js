@@ -3,10 +3,10 @@ angular
   .factory('$security', securityFactory)
   .factory('$securityInterceptor', securityInterceptor);
 
-securityFactory.$inject = ['$cookies', '$q', '$http'];
+securityFactory.$inject = ['$cookies', '$q', '$http', '$securityConfig'];
 securityInterceptor.$inject = ['$rootScope', '$q', '$cookies', '$securityConfig'];
 
-function securityFactory ($cookies, $q, $http) {
+function securityFactory ($cookies, $q, $http, $securityConfig) {
   /** interface */
   var security = {
     login: login,
@@ -24,7 +24,7 @@ function securityFactory ($cookies, $q, $http) {
 
   /** implementation */
   function login (token, user, permissions) {
-    $cookies.put('ng-security-authorization', token);
+    $cookies.put($securityConfig.token.storage, token);
     $cookies.putObject('ng-security-user', user);
     $cookies.putObject('ng-security-permissions', permissions);
   }
@@ -39,7 +39,7 @@ function securityFactory ($cookies, $q, $http) {
   }
 
   function logout () {
-    $cookies.remove('ng-security-authorization');
+    $cookies.remove($securityConfig.token.storage);
     $cookies.remove('ng-security-user');
   }
 
@@ -88,7 +88,7 @@ function securityFactory ($cookies, $q, $http) {
   }
 
   function isAuthenticated () {
-    return !!$cookies.get('ng-security-authorization');
+    return !!$cookies.get($securityConfig.token.storage);
   }
 
   function getUser () {
@@ -108,7 +108,7 @@ function securityInterceptor ($rootScope, $q, $cookies, $securityConfig) {
 
   /** implementation */
   function request (config) {
-    config.headers[$securityConfig.token.header] = $cookies.get('ng-security-authorization');
+    config.headers[$securityConfig.token.header] = $cookies.get($securityConfig.token.storage);
     return config;
   }
 

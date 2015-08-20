@@ -9,17 +9,20 @@ describe('Provider:security', function () {
   }));
   beforeEach(inject());
 
-  it('should return default value from token header name', function () {
+  it('should return default value from configuration', function () {
     assert.equal(provider.$get().token.header, 'Authorization');
+    assert.equal(provider.$get().token.storage, 'ng-security-authorization');
   });
 
-  it('should define token header name', function () {
+  it('should define configuration', function () {
     provider.configure({
       token: {
-        header: 'X-Auth'
+        header: 'X-Auth',
+        storage: 'myToken'
       }
     });
 
     assert.equal(provider.$get().token.header, 'X-Auth');
+    assert.equal(provider.$get().token.storage, 'myToken');
   });
 });
