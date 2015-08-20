@@ -8,6 +8,9 @@ function securityConfigProvider () {
     token: {
       header: 'Authorization',
       storage: 'ng-security-authorization'
+    },
+    user: {
+      storage: 'ng-security-user'
     }
   };
 

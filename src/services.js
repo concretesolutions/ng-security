@@ -25,7 +25,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   /** implementation */
   function login (token, user, permissions) {
     $cookies.put($securityConfig.token.storage, token);
-    $cookies.putObject('ng-security-user', user);
+    $cookies.putObject($securityConfig.user.storage, user);
     $cookies.putObject('ng-security-permissions', permissions);
   }
 
@@ -40,7 +40,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   function logout () {
     $cookies.remove($securityConfig.token.storage);
-    $cookies.remove('ng-security-user');
+    $cookies.remove($securityConfig.user.storage);
     $cookies.remove('ng-security-permissions');
   }
 
@@ -93,7 +93,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   }
 
   function getUser () {
-    return $cookies.getObject('ng-security-user');
+    return $cookies.getObject($securityConfig.user.storage);
   }
 }
 
