@@ -6,12 +6,6 @@
   "directories": {
     "test": "tests"
   },
-  "scripts": {
-    "test": "gulp test",
-    "build": "gulp dist",
-    "prepublish": "npm run build",
-    "prebuild": "npm run test"
-  },
   "author": "Patrick Porto <patrick.porto@concretesolutions.com.br>",
   "copyright": "(c) 2015 Concrete Solutions, Inc.",
   "license": "MIT",
@@ -30,6 +24,7 @@
     "karma-phantomjs-launcher": "^0.2.1",
     "karma-sinon-chai": "^1.0.0",
     "mocha": "^2.2.5",
+    "mversion": "^1.10.0",
     "phantomjs": "^1.9.18",
     "sinon": "^1.15.4"
   },
