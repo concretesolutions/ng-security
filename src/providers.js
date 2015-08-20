@@ -6,14 +6,12 @@ function securityConfigProvider () {
   var provider = {};
   var config = {
     token: {
-      header: 'Authorization',
-      storage: 'ng-security-authorization'
+      header: 'Authorization'
     },
-    user: {
-      storage: 'ng-security-user'
-    },
-    permissions: {
-      storage: 'ng-security-permissions'
+    storageName: {
+      token: 'ng-security-authorization',
+      user: 'ng-security-user',
+      permissions: 'ng-security-permissions'
     }
   };
 

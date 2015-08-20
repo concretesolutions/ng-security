@@ -24,9 +24,9 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   /** implementation */
   function login (token, user, permissions) {
-    $cookies.put($securityConfig.token.storage, token);
-    $cookies.putObject($securityConfig.user.storage, user);
-    $cookies.putObject($securityConfig.permissions.storage, permissions);
+    $cookies.put($securityConfig.storageName.token, token);
+    $cookies.putObject($securityConfig.storageName.user, user);
+    $cookies.putObject($securityConfig.storageName.permissions, permissions);
   }
 
   function loginByUrl (url, data) {
@@ -39,18 +39,18 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   }
 
   function logout () {
-    $cookies.remove($securityConfig.token.storage);
-    $cookies.remove($securityConfig.user.storage);
-    $cookies.remove($securityConfig.permissions.storage);
+    $cookies.remove($securityConfig.storageName.token);
+    $cookies.remove($securityConfig.storageName.user);
+    $cookies.remove($securityConfig.storageName.permissions);
   }
 
   function hasPermission (permissionRequired) {
-    var permissions = $cookies.getObject($securityConfig.permissions.storage);
+    var permissions = $cookies.getObject($securityConfig.storageName.permissions);
     return permissions.indexOf(permissionRequired) !== -1;
   }
 
   function hasAllPermission (permissionsRequired) {
-    var permissions = $cookies.getObject($securityConfig.permissions.storage),
+    var permissions = $cookies.getObject($securityConfig.storageName.permissions),
         exists = true;
     if (angular.isDefined(permissionsRequired)) {
       angular.forEach(permissionsRequired, function (permission) {
@@ -65,7 +65,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   }
 
   function hasAnyPermission (permissionsRequired) {
-    var permissions = $cookies.getObject($securityConfig.permissions.storage),
+    var permissions = $cookies.getObject($securityConfig.storageName.permissions),
         exists = false;
     if (angular.isDefined(permissionsRequired)) {
       angular.forEach(permissionsRequired, function (permission) {
@@ -89,11 +89,11 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   }
 
   function isAuthenticated () {
-    return !!$cookies.get($securityConfig.token.storage);
+    return !!$cookies.get($securityConfig.storageName.token);
   }
 
   function getUser () {
-    return $cookies.getObject($securityConfig.user.storage);
+    return $cookies.getObject($securityConfig.storageName.user);
   }
 }
 
@@ -109,7 +109,7 @@ function securityInterceptor ($rootScope, $q, $cookies, $securityConfig) {
 
   /** implementation */
   function request (config) {
-    config.headers[$securityConfig.token.header] = $cookies.get($securityConfig.token.storage);
+    config.headers[$securityConfig.token.header] = $cookies.get($securityConfig.storageName.token);
     return config;
   }
 

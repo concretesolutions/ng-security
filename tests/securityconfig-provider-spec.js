@@ -13,9 +13,9 @@ describe('Provider:security', function () {
     var config = provider.$get();
 
     assert.equal(config.token.header, 'Authorization');
-    assert.equal(config.token.storage, 'ng-security-authorization');
-    assert.equal(config.user.storage, 'ng-security-user');
-    assert.equal(config.permissions.storage, 'ng-security-permissions');
+    assert.equal(config.storageName.token, 'ng-security-authorization');
+    assert.equal(config.storageName.user, 'ng-security-user');
+    assert.equal(config.storageName.permissions, 'ng-security-permissions');
   });
 
   it('should define configuration', function () {
@@ -24,21 +24,19 @@ describe('Provider:security', function () {
     provider.configure({
       token: {
         header: 'X-Auth',
-        storage: 'myToken'
       },
-      user: {
-        storage: 'myUser'
-      },
-      permissions: {
-        storage: 'myPermissions'
+      storageName: {
+        token: 'myToken',
+        user: 'myUser',
+        permissions: 'myPermissions'
       }
     });
 
     config = provider.$get();
 
     assert.equal(config.token.header, 'X-Auth');
-    assert.equal(config.token.storage, 'myToken');
-    assert.equal(config.user.storage, 'myUser');
-    assert.equal(config.permissions.storage, 'myPermissions');
+    assert.equal(config.storageName.token, 'myToken');
+    assert.equal(config.storageName.user, 'myUser');
+    assert.equal(config.storageName.permissions, 'myPermissions');
   });
 });
