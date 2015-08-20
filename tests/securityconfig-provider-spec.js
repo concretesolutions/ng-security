@@ -13,6 +13,7 @@ describe('Provider:security', function () {
     assert.equal(provider.$get().token.header, 'Authorization');
     assert.equal(provider.$get().token.storage, 'ng-security-authorization');
     assert.equal(provider.$get().user.storage, 'ng-security-user');
+    assert.equal(provider.$get().permissions.storage, 'ng-security-permissions');
   });
 
   it('should define configuration', function () {
@@ -23,11 +24,15 @@ describe('Provider:security', function () {
       },
       user: {
         storage: 'myUser'
+      },
+      permissions: {
+        storage: 'myPermissions'
       }
     });
 
     assert.equal(provider.$get().token.header, 'X-Auth');
     assert.equal(provider.$get().token.storage, 'myToken');
     assert.equal(provider.$get().user.storage, 'myUser');
+    assert.equal(provider.$get().permissions.storage, 'myPermissions');
   });
 });

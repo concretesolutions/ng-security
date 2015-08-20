@@ -26,7 +26,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   function login (token, user, permissions) {
     $cookies.put($securityConfig.token.storage, token);
     $cookies.putObject($securityConfig.user.storage, user);
-    $cookies.putObject('ng-security-permissions', permissions);
+    $cookies.putObject($securityConfig.permissions.storage, permissions);
   }
 
   function loginByUrl (url, data) {
@@ -41,16 +41,16 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   function logout () {
     $cookies.remove($securityConfig.token.storage);
     $cookies.remove($securityConfig.user.storage);
-    $cookies.remove('ng-security-permissions');
+    $cookies.remove($securityConfig.permissions.storage);
   }
 
   function hasPermission (permissionRequired) {
-    var permissions = $cookies.getObject('ng-security-permissions');
+    var permissions = $cookies.getObject($securityConfig.permissions.storage);
     return permissions.indexOf(permissionRequired) !== -1;
   }
 
   function hasAllPermission (permissionsRequired) {
-    var permissions = $cookies.getObject('ng-security-permissions'),
+    var permissions = $cookies.getObject($securityConfig.permissions.storage),
         exists = true;
     if (angular.isDefined(permissionsRequired)) {
       angular.forEach(permissionsRequired, function (permission) {
@@ -65,7 +65,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   }
 
   function hasAnyPermission (permissionsRequired) {
-    var permissions = $cookies.getObject('ng-security-permissions'),
+    var permissions = $cookies.getObject($securityConfig.permissions.storage),
         exists = false;
     if (angular.isDefined(permissionsRequired)) {
       angular.forEach(permissionsRequired, function (permission) {

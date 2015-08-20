@@ -11,6 +11,9 @@ function securityConfigProvider () {
     },
     user: {
       storage: 'ng-security-user'
+    },
+    permissions: {
+      storage: 'ng-security-permissions'
     }
   };
 
