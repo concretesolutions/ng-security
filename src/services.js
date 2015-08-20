@@ -41,6 +41,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   function logout () {
     $cookies.remove($securityConfig.token.storage);
     $cookies.remove('ng-security-user');
+    $cookies.remove('ng-security-permissions');
   }
 
   function hasPermission (permissionRequired) {
