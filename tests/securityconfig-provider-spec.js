@@ -10,13 +10,17 @@ describe('Provider:security', function () {
   beforeEach(inject());
 
   it('should return default value from configuration', function () {
-    assert.equal(provider.$get().token.header, 'Authorization');
-    assert.equal(provider.$get().token.storage, 'ng-security-authorization');
-    assert.equal(provider.$get().user.storage, 'ng-security-user');
-    assert.equal(provider.$get().permissions.storage, 'ng-security-permissions');
+    var config = provider.$get();
+
+    assert.equal(config.token.header, 'Authorization');
+    assert.equal(config.token.storage, 'ng-security-authorization');
+    assert.equal(config.user.storage, 'ng-security-user');
+    assert.equal(config.permissions.storage, 'ng-security-permissions');
   });
 
   it('should define configuration', function () {
+    var config;
+
     provider.configure({
       token: {
         header: 'X-Auth',
@@ -30,9 +34,11 @@ describe('Provider:security', function () {
       }
     });
 
-    assert.equal(provider.$get().token.header, 'X-Auth');
-    assert.equal(provider.$get().token.storage, 'myToken');
-    assert.equal(provider.$get().user.storage, 'myUser');
-    assert.equal(provider.$get().permissions.storage, 'myPermissions');
+    config = provider.$get();
+
+    assert.equal(config.token.header, 'X-Auth');
+    assert.equal(config.token.storage, 'myToken');
+    assert.equal(config.user.storage, 'myUser');
+    assert.equal(config.permissions.storage, 'myPermissions');
   });
 });
