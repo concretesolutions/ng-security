@@ -4,7 +4,7 @@ angular
   .factory('$securityInterceptor', securityInterceptor);
 
 securityFactory.$inject = ['$cookies', '$q', '$http'];
-securityInterceptor.$inject = ['$rootScope', '$q', '$cookies'];
+securityInterceptor.$inject = ['$rootScope', '$q', '$cookies', '$securityConfig'];
 
 function securityFactory ($cookies, $q, $http) {
   /** interface */
@@ -96,7 +96,8 @@ function securityFactory ($cookies, $q, $http) {
   }
 }
 
-function securityInterceptor ($rootScope, $q, $cookies) {
+
+function securityInterceptor ($rootScope, $q, $cookies, $securityConfig) {
   /** interface */
   var interceptor = {
     request: request,
@@ -107,7 +108,7 @@ function securityInterceptor ($rootScope, $q, $cookies) {
 
   /** implementation */
   function request (config) {
-    config.headers.Authorization = $cookies.get('ng-security-authorization');
+    config.headers[$securityConfig.token.header] = $cookies.get('ng-security-authorization');
     return config;
   }
 
