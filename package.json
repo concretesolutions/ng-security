@@ -37,5 +37,16 @@
     "angular": "^1.4.4",
     "angular-cookies": "^1.4.4",
     "angular-mocks": "^1.4.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suporteconcrete/ng-security/"
+  },
+  "keywords": [
+    "angular",
+    "ng-security",
+    "authentication",
+    "auth",
+    "permission"
+  ]
 }
