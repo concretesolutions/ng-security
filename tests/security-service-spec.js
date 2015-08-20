@@ -69,11 +69,15 @@ describe('Service:security', function () {
   it('should logout user', function () {
     $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
       name: 'Patrick Porto'
-    });
+    }, [
+      'admin',
+      'staff'
+    ]);
     $security.logout();
 
     assert.isUndefined($cookies.get('ng-security-authorization'));
     assert.isUndefined($cookies.get('ng-security-user'));
+    assert.isUndefined($cookies.get('ng-security-permissions'));
   });
 
   it('should verify if user has permission', function () {
