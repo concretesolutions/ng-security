@@ -1,5 +1,0 @@
-{
-  "scripts": {
-    "precommit": "gulp test && gulp dist"
-  }
-}
