@@ -1,5 +1,5 @@
 /*
- ngsecurity v1.0.2
+ ngsecurity v1.1.1
  (c) 2015 Concrete Solutions, Inc.
  License: MIT
 */
@@ -150,13 +150,46 @@ angular.module('ngSecurity', [
 
 angular
   .module('ngSecurity')
+  .provider('$securityConfig', securityConfigProvider);
+
+function securityConfigProvider () {
+  var provider = {};
+  var config = {
+    token: {
+      header: 'Authorization',
+      prefix: ''
+    },
+    storageName: {
+      token: 'ng-security-authorization',
+      user: 'ng-security-user',
+      permissions: 'ng-security-permissions'
+    },
+    responseErrorName: {
+      401: 'unauthenticated',
+      403: 'permissionDenied'
+    }
+  };
+
+  provider.$get = function () {
+    return config;
+  };
+
+  provider.configure = function (options) {
+    config = angular.merge(config, options);
+  };
+
+  return provider;
+}
+
+angular
+  .module('ngSecurity')
   .factory('$security', securityFactory)
   .factory('$securityInterceptor', securityInterceptor);
 
-securityFactory.$inject = ['$cookies', '$q', '$http'];
-securityInterceptor.$inject = ['$rootScope', '$q', '$cookies'];
+securityFactory.$inject = ['$cookies', '$q', '$http', '$securityConfig'];
+securityInterceptor.$inject = ['$rootScope', '$q', '$cookies', '$securityConfig'];
 
-function securityFactory ($cookies, $q, $http) {
+function securityFactory ($cookies, $q, $http, $securityConfig) {
   /** interface */
   var security = {
     login: login,
@@ -174,9 +207,9 @@ function securityFactory ($cookies, $q, $http) {
 
   /** implementation */
   function login (token, user, permissions) {
-    $cookies.put('ng-security-authorization', token);
-    $cookies.putObject('ng-security-user', user);
-    $cookies.putObject('ng-security-permissions', permissions);
+    $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
+    $cookies.putObject($securityConfig.storageName.user, user);
+    $cookies.putObject($securityConfig.storageName.permissions, permissions);
   }
 
   function loginByUrl (url, data) {
@@ -189,18 +222,18 @@ function securityFactory ($cookies, $q, $http) {
   }
 
   function logout () {
-    $cookies.remove('ng-security-authorization');
-    $cookies.remove('ng-security-user');
-    $cookies.remove('ng-security-permissions');
+    $cookies.remove($securityConfig.storageName.token);
+    $cookies.remove($securityConfig.storageName.user);
+    $cookies.remove($securityConfig.storageName.permissions);
   }
 
   function hasPermission (permissionRequired) {
-    var permissions = $cookies.getObject('ng-security-permissions');
+    var permissions = $cookies.getObject($securityConfig.storageName.permissions);
     return permissions.indexOf(permissionRequired) !== -1;
   }
 
   function hasAllPermission (permissionsRequired) {
-    var permissions = $cookies.getObject('ng-security-permissions'),
+    var permissions = $cookies.getObject($securityConfig.storageName.permissions),
         exists = true;
     if (angular.isDefined(permissionsRequired)) {
       angular.forEach(permissionsRequired, function (permission) {
@@ -215,7 +248,7 @@ function securityFactory ($cookies, $q, $http) {
   }
 
   function hasAnyPermission (permissionsRequired) {
-    var permissions = $cookies.getObject('ng-security-permissions'),
+    var permissions = $cookies.getObject($securityConfig.storageName.permissions),
         exists = false;
     if (angular.isDefined(permissionsRequired)) {
       angular.forEach(permissionsRequired, function (permission) {
@@ -239,15 +272,16 @@ function securityFactory ($cookies, $q, $http) {
   }
 
   function isAuthenticated () {
-    return !!$cookies.get('ng-security-authorization');
+    return !!$cookies.get($securityConfig.storageName.token);
   }
 
   function getUser () {
-    return $cookies.getObject('ng-security-user');
+    return $cookies.getObject($securityConfig.storageName.user);
   }
 }
 
-function securityInterceptor ($rootScope, $q, $cookies) {
+
+function securityInterceptor ($rootScope, $q, $cookies, $securityConfig) {
   /** interface */
   var interceptor = {
     request: request,
@@ -258,15 +292,12 @@ function securityInterceptor ($rootScope, $q, $cookies) {
 
   /** implementation */
   function request (config) {
-    config.headers.Authorization = $cookies.get('ng-security-authorization');
+    config.headers[$securityConfig.token.header] = $cookies.get($securityConfig.storageName.token);
     return config;
   }
 
   function responseError (response) {
-    var events = {
-      401: 'unauthenticated',
-      403: 'permissionDenied'
-    };
+    var events = $securityConfig.responseErrorName;
     if (events[response.status]) {
       $rootScope.$broadcast(events[response.status], response);
     }
