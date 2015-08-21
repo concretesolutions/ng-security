@@ -25,6 +25,8 @@ angular
   }]);
 ```
 
+## API ##
+
 ### Service Methods ###
 #### login(token: String, [user: Object, [permissions: Array]]) ####
 Authenticate a user with token. Data and permissions are additional.  
@@ -63,6 +65,7 @@ angular
     }
   }]);
 ```
+
 Compatible response:  
 
 ```javascript
@@ -161,6 +164,29 @@ The directive sets the disabled attribute on the HTML element if user has permis
   Remove User
 </button>
 ```
+
+### Provider Options ###
+```javascript
+angular
+  .module('myApp')
+  .config(['$securityConfigProvider', function ($securityConfigProvider) {
+    $securityConfigProvider.configure({
+      token: {
+        header: 'Authorization'  /* request header name intercepted */
+      },
+      storageName: {
+        token: 'ng-security-authorization',
+        user: 'ng-security-user',
+        permissions: 'ng-security-permissions'
+      },
+      responseErrorName: {  /* the name for broadcast of request error intercepted */
+        401: 'unauthenticated',
+        403: 'permissionDenied'
+      }
+    });
+  }]);
+```
+
 
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]: LICENSE
