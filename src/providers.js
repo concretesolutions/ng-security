@@ -12,6 +12,10 @@ function securityConfigProvider () {
       token: 'ng-security-authorization',
       user: 'ng-security-user',
       permissions: 'ng-security-permissions'
+    },
+    responseErrorName: {
+      401: 'unauthenticated',
+      403: 'permissionDenied'
     }
   };
 

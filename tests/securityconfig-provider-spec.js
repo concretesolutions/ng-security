@@ -16,6 +16,8 @@ describe('Provider:security', function () {
     assert.equal(config.storageName.token, 'ng-security-authorization');
     assert.equal(config.storageName.user, 'ng-security-user');
     assert.equal(config.storageName.permissions, 'ng-security-permissions');
+    assert.equal(config.responseErrorName[401], 'unauthenticated');
+    assert.equal(config.responseErrorName[403], 'permissionDenied');
   });
 
   it('should define configuration', function () {
@@ -29,6 +31,10 @@ describe('Provider:security', function () {
         token: 'myToken',
         user: 'myUser',
         permissions: 'myPermissions'
+      },
+      responseErrorName: {
+        401: 'notAuthenticated',
+        403: 'notPermitted'
       }
     });
 
@@ -38,5 +44,7 @@ describe('Provider:security', function () {
     assert.equal(config.storageName.token, 'myToken');
     assert.equal(config.storageName.user, 'myUser');
     assert.equal(config.storageName.permissions, 'myPermissions');
+    assert.equal(config.responseErrorName[401], 'notAuthenticated');
+    assert.equal(config.responseErrorName[403], 'notPermitted');
   });
 });
