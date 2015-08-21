@@ -172,7 +172,8 @@ angular
   .config(['$securityConfigProvider', function ($securityConfigProvider) {
     $securityConfigProvider.configure({
       token: {
-        header: 'Authorization'  /* request header name intercepted */
+        header: 'Authorization',  /* request header name intercepted */
+        prefix: ''
       },
       storageName: {
         token: 'ng-security-authorization',

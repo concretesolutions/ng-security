@@ -24,7 +24,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   /** implementation */
   function login (token, user, permissions) {
-    $cookies.put($securityConfig.storageName.token, token);
+    $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
     $cookies.putObject($securityConfig.storageName.user, user);
     $cookies.putObject($securityConfig.storageName.permissions, permissions);
   }

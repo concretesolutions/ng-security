@@ -13,6 +13,7 @@ describe('Provider:security', function () {
     var config = provider.$get();
 
     assert.equal(config.token.header, 'Authorization');
+    assert.equal(config.token.prefix, '');
     assert.equal(config.storageName.token, 'ng-security-authorization');
     assert.equal(config.storageName.user, 'ng-security-user');
     assert.equal(config.storageName.permissions, 'ng-security-permissions');
@@ -26,6 +27,7 @@ describe('Provider:security', function () {
     provider.configure({
       token: {
         header: 'X-Auth',
+        prefix: 'JWT '
       },
       storageName: {
         token: 'myToken',
@@ -41,6 +43,7 @@ describe('Provider:security', function () {
     config = provider.$get();
 
     assert.equal(config.token.header, 'X-Auth');
+    assert.equal(config.token.prefix, 'JWT ');
     assert.equal(config.storageName.token, 'myToken');
     assert.equal(config.storageName.user, 'myUser');
     assert.equal(config.storageName.permissions, 'myPermissions');

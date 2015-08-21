@@ -6,7 +6,8 @@ function securityConfigProvider () {
   var provider = {};
   var config = {
     token: {
-      header: 'Authorization'
+      header: 'Authorization',
+      prefix: ''
     },
     storageName: {
       token: 'ng-security-authorization',
