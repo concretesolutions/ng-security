@@ -23,13 +23,14 @@ angular
   .config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push('$securityInterceptor');
   }]);
-```
+```  
 
 ## API ##
 
 ### Service Methods ###
 #### login(token: String, [user: Object, [permissions: Array]]) ####
 Authenticate a user with token. Data and permissions are additional.  
+Simple example:  
 
 ```javascript
 angular
@@ -48,8 +49,34 @@ angular
   }]);
 ```
 
+[JWT](http://jwt.io/) example:  
+
+```javascript
+/* file: app.js */
+angular
+  .module('myApp')
+  .config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.interceptors.push('$securityInterceptor');
+    $securityConfigProvider.configure({
+      strategy: 'jwt',
+    });
+  }])
+  .controller(['$scope', '$http', '$security', function ($scope, $http, $security) {
+    $scope.username = 'admin';
+    $scope.password = 'admin';
+    $scope.authenticate = function () {
+      $http.post('/api/auth', {
+        username: $scope.username,
+        password: $scope.password
+      }).success(function (data) {
+        $security.login(data.token);
+      });
+    }
+  }]);
+```  
 #### loginByUrl(url: String, data: Object) ####
 Use resource for authenticate user. The service should return a response compatible. The return is a promise.  
+Simple example:  
 
 ```javascript
 angular
@@ -66,7 +93,7 @@ angular
   }]);
 ```
 
-Compatible response:  
+Compatible API response:  
 
 ```javascript
 {
@@ -77,6 +104,38 @@ Compatible response:
   "permissions": [  /* optional */
     'admin'
   ]
+}
+```
+
+[JWT](http://jwt.io/) example:  
+
+```javascript
+/* file: app.js */
+angular
+  .module('myApp')
+  .config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.interceptors.push('$securityInterceptor');
+    $securityConfigProvider.configure({
+      strategy: 'jwt',
+    });
+  }])
+  .controller(['$scope', '$security', function ($scope, $security) {
+    $scope.username = 'admin';
+    $scope.password = 'admin';
+    $scope.authenticate = function () {
+      $security.loginByUrl('/api/auth', {
+        username: $scope.username,
+        password: $scope.password
+      }));
+    };
+  }]);
+```  
+
+Compatible API response:  
+
+```javascript
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRtaW5pc3RyYXRvciJ9.cwtcdrm6c5fXBdnhzkFnlXmvvsRY7xB6YsKrLE_phm4",  /* required */
 }
 ```
 
