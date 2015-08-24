@@ -1,5 +1,5 @@
 /*
- ngsecurity v1.1.1
+ ngsecurity v1.2.0
  (c) 2015 Concrete Solutions, Inc.
  License: MIT
 */
@@ -155,6 +155,7 @@ angular
 function securityConfigProvider () {
   var provider = {};
   var config = {
+    strategy: 'simple',
     token: {
       header: 'Authorization',
       prefix: ''
@@ -201,12 +202,36 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     getPermissionValidation: getPermissionValidation,
     isAuthenticated: isAuthenticated,
     getUser: getUser
+  }, authStrategy = {
+    'jwt': authStrategyJWT,
+    'simple': authStrategySimple
   };
 
   return security;
 
   /** implementation */
-  function login (token, user, permissions) {
+  function login () {
+    return authStrategy[$securityConfig.strategy].apply(this, arguments);
+  }
+
+  function authStrategyJWT(token, permissions) {
+    var user,
+        userEncoded;
+    userEncoded = token.split('.')[1];
+    if ((userEncoded.length % 4) === 2) {
+      userEncoded += '==';
+    } else if ((userEncoded.length % 4) === 3) {
+      userEncoded += '=';
+    } else if ((userEncoded.length % 4) !== 0) {
+      throw 'Invalid token string.';
+    }
+    user = JSON.parse(atob(userEncoded + '=='));
+    $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
+    $cookies.putObject($securityConfig.storageName.user, user);
+    $cookies.putObject($securityConfig.storageName.permissions, permissions);
+  }
+
+  function authStrategySimple(token, user, permissions) {
     $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
     $cookies.putObject($securityConfig.storageName.user, user);
     $cookies.putObject($securityConfig.storageName.permissions, permissions);
