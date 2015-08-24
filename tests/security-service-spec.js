@@ -201,4 +201,24 @@ describe('Service:security', function () {
     assert.equal($security.getUser().name, 'Patrick Porto');
   });
 
+  it('should authenticate with JSON web token and permissions', function () {
+    provider.configure({
+      strategy: 'jwt'
+    });
+
+    $security.login([
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      'eyJuYW1lIjoiUGF0cmljayBQb3J0byJ9',
+      'UoOFQCTrjryDTvl4XeWymslGknL-9-Me8enyf_DC98M'
+    ].join('.'), ['admin']);
+
+    assert.equal($cookies.get('ng-security-authorization'), [
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      'eyJuYW1lIjoiUGF0cmljayBQb3J0byJ9',
+      'UoOFQCTrjryDTvl4XeWymslGknL-9-Me8enyf_DC98M'
+    ].join('.'));
+    assert.equal($cookies.getObject('ng-security-user').name, 'Patrick Porto');
+    assert.include($cookies.getObject('ng-security-permissions'), 'admin');
+  });
+
 });

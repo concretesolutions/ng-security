@@ -26,11 +26,11 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   return security;
 
   /** implementation */
-  function login (token, user, permissions) {
-    return authStrategy[$securityConfig.strategy](token, user, permissions);
+  function login () {
+    return authStrategy[$securityConfig.strategy].apply(this, arguments);
   }
 
-  function authStrategyJWT(token) {
+  function authStrategyJWT(token, permissions) {
     var user,
         userEncoded;
     userEncoded = token.split('.')[1];
@@ -44,6 +44,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     user = JSON.parse(atob(userEncoded + '=='));
     $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
     $cookies.putObject($securityConfig.storageName.user, user);
+    $cookies.putObject($securityConfig.storageName.permissions, permissions);
   }
 
   function authStrategySimple(token, user, permissions) {
