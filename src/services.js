@@ -10,6 +10,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   /** interface */
   var security = {
     login: login,
+    loginJWT: loginJWT,
     loginByUrl: loginByUrl,
     logout: logout,
     hasPermission: hasPermission,
@@ -27,6 +28,22 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
     $cookies.putObject($securityConfig.storageName.user, user);
     $cookies.putObject($securityConfig.storageName.permissions, permissions);
+  }
+
+  function loginJWT (token) {
+    var user,
+        userEncoded;
+    userEncoded = token.split('.')[1];
+    if ((userEncoded.length % 4) === 2) {
+      userEncoded += '==';
+    } else if ((userEncoded.length % 4) === 3) {
+      userEncoded += '=';
+    } else if ((userEncoded.length % 4) !== 0) {
+      throw 'Invalid token string.';
+    }
+    user = JSON.parse(atob(userEncoded + '=='));
+    $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
+    $cookies.putObject($securityConfig.storageName.user, user);
   }
 
   function loginByUrl (url, data) {

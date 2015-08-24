@@ -143,4 +143,16 @@ describe('Service:security', function () {
 
     assert.equal($security.getUser().name, 'Patrick Porto');
   });
+
+  it('should decode user data from token', function () {
+    var token = [
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      'eyJuYW1lIjoiUGF0cmljayBQb3J0byJ9',
+      'UoOFQCTrjryDTvl4XeWymslGknL-9-Me8enyf_DC98M'
+    ].join('.');
+
+    $security.loginJWT(token);
+
+    assert.equal($security.getUser().name, 'Patrick Porto');
+  });
 });
