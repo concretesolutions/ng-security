@@ -12,6 +12,7 @@ describe('Provider:security', function () {
   it('should return default value from configuration', function () {
     var config = provider.$get();
 
+    assert.equal(config.strategy, 'simple');
     assert.equal(config.token.header, 'Authorization');
     assert.equal(config.token.prefix, '');
     assert.equal(config.storageName.token, 'ng-security-authorization');
@@ -25,7 +26,7 @@ describe('Provider:security', function () {
     var config;
 
     provider.configure({
-      strategy: 'simple',
+      strategy: 'jwt',
       token: {
         header: 'X-Auth',
         prefix: 'JWT '
@@ -43,6 +44,7 @@ describe('Provider:security', function () {
 
     config = provider.$get();
 
+    assert.equal(config.strategy, 'jwt');
     assert.equal(config.token.header, 'X-Auth');
     assert.equal(config.token.prefix, 'JWT ');
     assert.equal(config.storageName.token, 'myToken');
