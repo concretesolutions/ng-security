@@ -10,7 +10,6 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   /** interface */
   var security = {
     login: login,
-    loginJWT: loginJWT,
     loginByUrl: loginByUrl,
     logout: logout,
     hasPermission: hasPermission,
@@ -19,18 +18,19 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     getPermissionValidation: getPermissionValidation,
     isAuthenticated: isAuthenticated,
     getUser: getUser
+  }, authStrategy = {
+    'jwt': authStrategyJWT,
+    'simple': authStrategySimple
   };
 
   return security;
 
   /** implementation */
   function login (token, user, permissions) {
-    $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
-    $cookies.putObject($securityConfig.storageName.user, user);
-    $cookies.putObject($securityConfig.storageName.permissions, permissions);
+    return authStrategy[$securityConfig.strategy](token, user, permissions);
   }
 
-  function loginJWT (token) {
+  function authStrategyJWT(token) {
     var user,
         userEncoded;
     userEncoded = token.split('.')[1];
@@ -44,6 +44,12 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     user = JSON.parse(atob(userEncoded + '=='));
     $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
     $cookies.putObject($securityConfig.storageName.user, user);
+  }
+
+  function authStrategySimple(token, user, permissions) {
+    $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
+    $cookies.putObject($securityConfig.storageName.user, user);
+    $cookies.putObject($securityConfig.storageName.permissions, permissions);
   }
 
   function loginByUrl (url, data) {

@@ -5,6 +5,7 @@ angular
 function securityConfigProvider () {
   var provider = {};
   var config = {
+    strategy: 'simple',
     token: {
       header: 'Authorization',
       prefix: ''

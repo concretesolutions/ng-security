@@ -25,6 +25,7 @@ describe('Provider:security', function () {
     var config;
 
     provider.configure({
+      strategy: 'simple',
       token: {
         header: 'X-Auth',
         prefix: 'JWT '

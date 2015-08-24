@@ -4,7 +4,12 @@ describe('Service:security', function () {
   beforeEach(module('ngSecurity'));
   var $cookies,
       $security,
-      $httpBackend;
+      $httpBackend,
+      provider;
+
+  beforeEach(module(function ($securityConfigProvider) {
+    provider = $securityConfigProvider;
+  }));
 
   beforeEach(inject(function ($injector) {
     $cookies = $injector.get('$cookies');
@@ -22,6 +27,17 @@ describe('Service:security', function () {
       permissions: [
         'admin'
       ]
+    });
+
+    $httpBackend.whenPOST('/api/auth/jwt', {
+      username: 'admin',
+      password: 'admin'
+    }).respond(201, {
+      token: [
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+        'eyJuYW1lIjoiUGF0cmljayBQb3J0byJ9',
+        'UoOFQCTrjryDTvl4XeWymslGknL-9-Me8enyf_DC98M'
+      ].join('.')
     });
 
     $cookies.remove('ng-security-authorization');
@@ -145,14 +161,44 @@ describe('Service:security', function () {
   });
 
   it('should decode user data from token', function () {
+    provider.configure({
+      strategy: 'jwt'
+    });
+
     var token = [
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
       'eyJuYW1lIjoiUGF0cmljayBQb3J0byJ9',
       'UoOFQCTrjryDTvl4XeWymslGknL-9-Me8enyf_DC98M'
     ].join('.');
 
-    $security.loginJWT(token);
+    $security.login(token);
 
+    assert.equal($cookies.get('ng-security-authorization'), [
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      'eyJuYW1lIjoiUGF0cmljayBQb3J0byJ9',
+      'UoOFQCTrjryDTvl4XeWymslGknL-9-Me8enyf_DC98M'
+    ].join('.'));
     assert.equal($security.getUser().name, 'Patrick Porto');
   });
+
+  it('should authenticate by web service with JSON web token', function () {
+    provider.configure({
+      strategy: 'jwt'
+    });
+
+    $security.loginByUrl('/api/auth/jwt', {
+      username: 'admin',
+      password: 'admin'
+    });
+
+    $httpBackend.flush();
+
+    assert.equal($cookies.get('ng-security-authorization'), [
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      'eyJuYW1lIjoiUGF0cmljayBQb3J0byJ9',
+      'UoOFQCTrjryDTvl4XeWymslGknL-9-Me8enyf_DC98M'
+    ].join('.'));
+    assert.equal($security.getUser().name, 'Patrick Porto');
+  });
+
 });

@@ -171,6 +171,7 @@ angular
   .module('myApp')
   .config(['$securityConfigProvider', function ($securityConfigProvider) {
     $securityConfigProvider.configure({
+      strategy: 'simple',  /* Validation method. Examples: 'jwt' */
       token: {
         header: 'Authorization',  /* request header name intercepted */
         prefix: ''
