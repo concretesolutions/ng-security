@@ -1,6 +1,6 @@
 # ngSecurity #
 
-[![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-image]][npm-url] [![MIT License][license-image]][license-url]
+[![Build status][build-status-image]][build-status-url] [![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-image]][npm-url] [![MIT License][license-image]][license-url]
 
 #### A security module for [AngularJS](http://angularjs.org). ####
 
@@ -188,6 +188,8 @@ angular
   }]);
 ```
 
+[build-status-image]: https://travis-ci.org/concretesolutions/ng-security.svg
+[build-status-url]: https://travis-ci.org/concretesolutions/ng-security
 
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]: LICENSE
