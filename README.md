@@ -57,7 +57,7 @@ Authenticate a user with token. Permissions are optional.
 /* file: app.js */
 angular
   .module('myApp')
-  .config(['$httpProvider', function ($httpProvider) {
+  .config(['$httpProvider', '$securityConfigProvider', function ($httpProvider, $securityConfigProvider) {
     $httpProvider.interceptors.push('$securityInterceptor');
     $securityConfigProvider.configure({
       strategy: 'jwt',
@@ -115,7 +115,7 @@ Compatible API response:
 /* file: app.js */
 angular
   .module('myApp')
-  .config(['$httpProvider', function ($httpProvider) {
+  .config(['$httpProvider', '$securityConfigProvider', function ($httpProvider, $securityConfigProvider) {
     $httpProvider.interceptors.push('$securityInterceptor');
     $securityConfigProvider.configure({
       strategy: 'jwt',
