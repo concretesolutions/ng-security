@@ -28,8 +28,8 @@ angular
 ## API ##
 
 ### Service Methods ###
-#### login(token: String, [user: Object, [permissions: Array]]) ####
-Authenticate a user with token. Data and permissions are additional.  
+#### login(token: String, [user: Object, [permissions: Array]])  [Simple strategy] ####
+Authenticate a user with token. Data and permissions are optional.  
 Simple example:  
 
 ```javascript
@@ -49,6 +49,8 @@ angular
   }]);
 ```
 
+#### login(token: String, [permissions: Array])  [JWT strategy] ####
+Authenticate a user with token. Permissions are optional.  
 [JWT](http://jwt.io/) example:  
 
 ```javascript
@@ -69,7 +71,7 @@ angular
         username: $scope.username,
         password: $scope.password
       }).success(function (data) {
-        $security.login(data.token);
+        $security.login(data.token, data.permissions);
       });
     }
   }]);
