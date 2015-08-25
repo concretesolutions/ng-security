@@ -40,6 +40,18 @@ describe('Directive:ifPermissionModel', function () {
     assert.equal(element.css('display'), 'none');
   });
 
+  it('should hide element if not authenticate', function () {
+    $rootScope.permission = 'admin';
+    var element = $compile([
+      '<div ng-if-permission-model="permission">',
+      '</div>'
+    ].join())($rootScope);
+
+    $rootScope.$digest();
+
+    assert.equal(element.css('display'), 'none');
+  });
+
   it('should show element if have admin or staff permission', function () {
     $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {}, ['admin']);
     $rootScope.permissions = [

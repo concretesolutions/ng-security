@@ -70,13 +70,16 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   function hasPermission (permissionRequired) {
     var permissions = $cookies.getObject($securityConfig.storageName.permissions);
+    if (!permissions) {
+      return false;
+    }
     return permissions.indexOf(permissionRequired) !== -1;
   }
 
   function hasAllPermission (permissionsRequired) {
     var permissions = $cookies.getObject($securityConfig.storageName.permissions),
         exists = true;
-    if (angular.isDefined(permissionsRequired)) {
+    if (!!permissionsRequired && !!permissions) {
       angular.forEach(permissionsRequired, function (permission) {
         if (permissions.indexOf(permission) === -1) {
           exists = false;
@@ -91,7 +94,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
   function hasAnyPermission (permissionsRequired) {
     var permissions = $cookies.getObject($securityConfig.storageName.permissions),
         exists = false;
-    if (angular.isDefined(permissionsRequired)) {
+    if (!!permissionsRequired && !!permissions) {
       angular.forEach(permissionsRequired, function (permission) {
         if (permissions.indexOf(permission) !== -1) {
           exists = true;
