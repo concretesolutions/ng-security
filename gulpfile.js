@@ -30,7 +30,10 @@ gulp.task('dist', function () {
     ' License: ' + config.license,
     '*/'
   ].join('\n');
-  return gulp.src('./src/*.js')
+  return gulp.src([
+      './src/module.js',
+      './src/*.js'
+    ])
     .pipe(concat(config.name + '.js'))
     .pipe(wrapper({
       header: [

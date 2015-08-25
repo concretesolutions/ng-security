@@ -4,7 +4,11 @@
  License: MIT
 */
 'use strict';
-(function () {angular
+(function () {angular.module('ngSecurity', [
+  'ngCookies'
+]);
+
+angular
   .module('ngSecurity')
   .directive('ngIfAuthenticated', ifAuthenticated)
   .directive('ngIfAnonymous', ifAnonymous)
@@ -143,10 +147,6 @@ function enabledPermission ($security) {
     });
   }
 }
-
-angular.module('ngSecurity', [
-  'ngCookies'
-]);
 
 angular
   .module('ngSecurity')
