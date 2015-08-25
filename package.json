@@ -1,6 +1,6 @@
 {
   "name": "ngsecurity",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A security module for AngularJS.",
   "main": "index.js",
   "directories": {
