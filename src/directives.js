@@ -6,7 +6,8 @@ angular
   .directive('ngIfPermissionModel', ifPermissionModel)
   .directive('ngEnabledPermission', enabledPermission)
   .directive('ngClickLogout', clickLogout)
-  .directive('ngBindUser', bindUser);
+  .directive('ngBindUser', bindUser)
+  .directive('ngSubmitLogin', submitLogin);
 
 ifAuthenticated.$inject = ['$security'];
 ifAnonymous.$inject = ['$security'];
@@ -15,6 +16,7 @@ ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
 clickLogout.$inject = ['$security'];
 bindUser.$inject = ['$security'];
+submitLogin.$inject = ['$security', '$parse'];
 
 function ifAuthenticated ($security) {
   /** interface */
@@ -183,5 +185,30 @@ function bindUser ($security) {
     }, function (user) {
       element.text(user[attrs.ngBindUser])
     }, true);
+  }
+}
+
+function submitLogin ($security,  $parse) {
+  var directive = {
+    link: link,
+    restrict: 'A',
+    require: '^form'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs, formCtrl) {
+    element.bind('submit', function () {
+      var url = attrs.ngSubmitLogin,
+          fields = element.find('input'),
+          credentials = {};
+      angular.forEach(fields, function (input) {
+        if (input.type !== 'submit' && !!input.name) {
+          credentials[input.name] = input.value;
+        }
+      })
+      $security.loginByUrl(url, credentials);
+    });
   }
 }
