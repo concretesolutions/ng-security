@@ -4,13 +4,15 @@ angular
   .directive('ngIfAnonymous', ifAnonymous)
   .directive('ngIfPermission', ifPermission)
   .directive('ngIfPermissionModel', ifPermissionModel)
-  .directive('ngEnabledPermission', enabledPermission);
+  .directive('ngEnabledPermission', enabledPermission)
+  .directive('ngClickLogout', clickLogout);
 
 ifAuthenticated.$inject = ['$security'];
 ifAnonymous.$inject = ['$security'];
 ifPermission.$inject = ['$security'];
 ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
+clickLogout.$inject = ['$security'];
 
 function ifAuthenticated ($security) {
   /** interface */
@@ -147,5 +149,19 @@ function enabledPermission ($security) {
         element.attr('disabled', 'true');
       }
     }, true);
+  }
+}
+
+function clickLogout ($security) {
+  var directive = {
+    link: link,
+    restrict: 'A'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs) {
+    element.bind('click', $security.logout);
   }
 }

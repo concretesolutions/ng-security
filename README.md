@@ -229,6 +229,15 @@ The directive sets the disabled attribute on the HTML element if user has permis
 </button>
 ```
 
+#### ng-click-logout (Attribute only)  ####
+The directive logout current user.  
+
+```html
+<button ng-click-logout>
+  Logout
+</button>
+```
+
 ### Provider Options ###
 ```javascript
 angular
