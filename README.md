@@ -247,6 +247,17 @@ The directive replace the text content of the specified HTML element with the us
 </div>
 ```
 
+#### ng-submit-login="\<url: String\>" (Attribute only)  ####
+The directive login user when submit form.  
+
+```html
+<form ng-submit-login="/api/auth">
+  <input type="text" name="username" />
+  <input type="password" name="password" />
+  <button type="submit">Login</button>
+</form>
+```
+
 ### Provider Options ###
 ```javascript
 angular
