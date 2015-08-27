@@ -17,7 +17,8 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     hasAnyPermission: hasAnyPermission,
     getPermissionValidation: getPermissionValidation,
     isAuthenticated: isAuthenticated,
-    getUser: getUser
+    getUser: getUser,
+    getPermissions: getPermissions
   }, authStrategy = {
     'jwt': authStrategyJWT,
     'simple': authStrategySimple
@@ -121,6 +122,10 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   function getUser () {
     return $cookies.getObject($securityConfig.storageName.user);
+  }
+
+  function getPermissions () {
+    return $cookies.getObject($securityConfig.storageName.permissions);
   }
 }
 

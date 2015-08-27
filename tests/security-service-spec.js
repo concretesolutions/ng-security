@@ -221,4 +221,17 @@ describe('Service:security', function () {
     assert.include($cookies.getObject('ng-security-permissions'), 'admin');
   });
 
+  it('should provide user permissions', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    }, [
+      'staff',
+      'admin'
+    ]);
+
+    assert.deepEqual($security.getPermissions(), [
+      'staff',
+      'admin'
+    ]);
+  });
 });

@@ -159,6 +159,9 @@ Check if user is authenticated.
 #### getUser() ####
 Get session user data.  
 
+#### getPermissions() ####
+Get session user permissions.  
+
 ### Directives ###
 
 #### ng-if-authenticated (Attribute only)  ####
