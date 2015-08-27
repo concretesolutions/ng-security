@@ -238,6 +238,15 @@ The directive logout current user.
 </button>
 ```
 
+#### ng-bind-user="\<attribute: String\>" (Attribute only)  ####
+The directive replace the text content of the specified HTML element with the user data.  
+
+```html
+<div ng-bind-user="name">
+  <!-- render user name -->
+</div>
+```
+
 ### Provider Options ###
 ```javascript
 angular
