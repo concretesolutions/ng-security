@@ -18,12 +18,60 @@ $ npm install ngsecurity
 ## Get Started ##
 Your setup should look similar to the following:
 ```javascript
+/* file: app.js */
 angular
   .module('myApp', ['ngSecurity'])
   .config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push('$securityInterceptor');
-  }]);
-```  
+  }])
+  .run(function ($rootScope) {
+    $rootScope.$on('unauthenticated', function () {
+      alert('redirect to login');
+    });
+    $rootScope.$on('permissionDenied', function () {
+      alert('redirect to permission denied');
+    });
+  });
+```
+
+```html
+<!-- file: index.html -->
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <body>
+    <form ng-submit-login="/auth/login">
+      <input type="text" name="username" />
+      <input type="password" name="password" />
+      <button type="submit">Login</button>
+    </form>
+    <div ng-if-authenticated>
+      User is authenticated
+    </div>
+    <div ng-if-anonymous>
+      User is Anonymous
+    </div>
+    <div ng-if-permission="admin">
+      User is Administrator
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+```
+
+```javascript
+/* POST /api/auth response */
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",  /* required */
+  "user": {  /* optional */
+    "name": 'Administrator'
+  },
+  "permissions": [  /* optional */
+    'admin'
+  ]
+}
+```
+
 
 ## API ##
 
