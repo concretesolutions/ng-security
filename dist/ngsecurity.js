@@ -1,5 +1,5 @@
 /*
- ngsecurity v1.2.2
+ ngsecurity v1.3.0
  (c) 2015 Concrete Solutions, Inc.
  License: MIT
 */
@@ -14,13 +14,19 @@ angular
   .directive('ngIfAnonymous', ifAnonymous)
   .directive('ngIfPermission', ifPermission)
   .directive('ngIfPermissionModel', ifPermissionModel)
-  .directive('ngEnabledPermission', enabledPermission);
+  .directive('ngEnabledPermission', enabledPermission)
+  .directive('ngClickLogout', clickLogout)
+  .directive('ngBindUser', bindUser)
+  .directive('ngSubmitLogin', submitLogin);
 
 ifAuthenticated.$inject = ['$security'];
 ifAnonymous.$inject = ['$security'];
 ifPermission.$inject = ['$security'];
 ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
+clickLogout.$inject = ['$security'];
+bindUser.$inject = ['$security'];
+submitLogin.$inject = ['$security', '$parse'];
 
 function ifAuthenticated ($security) {
   /** interface */
@@ -82,17 +88,18 @@ function ifPermission ($security) {
   /** implementation */
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display'),
-        permissionType = attrs.ngPermissionType;
+        permissionType = attrs.ngPermissionType,
+        permissions = attrs.ngIfPermission.split(',');
+
     scope.$watch(function () {
-      return attrs.ngIfPermission;
-    }, function (permission) {
-      var permissions = permission.split(',');
+      return $security.getPermissions();
+    }, function () {
       if ($security.getPermissionValidation(permissionType)(permissions)) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
       }
-    });
+    }, true);
   }
 }
 
@@ -110,15 +117,26 @@ function ifPermissionModel ($security, $parse) {
     var defaultStyle = element.css('display'),
         permissionType = attrs.ngPermissionType;
 
+    var updateElement = function (permissions) {
+        if ($security.hasPermission(permissions) || $security.getPermissionValidation(permissionType)(permissions)) {
+          element.css('display', defaultStyle);
+        } else {
+          element.css('display', 'none');
+        }
+    }
+
     scope.$watch(function () {
       return $parse(attrs.ngIfPermissionModel)(scope);
     }, function (permissions) {
-      if ($security.hasPermission(permissions) || $security.getPermissionValidation(permissionType)(permissions)) {
-        element.css('display', defaultStyle);
-      } else {
-        element.css('display', 'none');
-      }
+      updateElement(permissions);
     });
+
+    scope.$watch(function () {
+      return $security.getPermissions();
+    }, function () {
+      var permissions = $parse(attrs.ngIfPermissionModel)(scope);
+      updateElement(permissions);
+    }, true);
   }
 }
 
@@ -133,17 +151,74 @@ function enabledPermission ($security) {
 
   /** implementation */
   function link (scope, element, attrs) {
-    var permissionType = attrs.ngPermissionType;
+    var permissionType = attrs.ngPermissionType,
+        permissions = attrs.ngEnabledPermission.split(',');
 
     scope.$watch(function () {
-      return attrs.ngEnabledPermission;
-    }, function (permission) {
-      var permissions = permission.split(',');
+      return $security.getPermissions();
+    }, function () {
       if ($security.getPermissionValidation(permissionType)(permissions)) {
         element.removeAttr('disabled');
       } else {
         element.attr('disabled', 'true');
       }
+    }, true);
+  }
+}
+
+function clickLogout ($security) {
+  var directive = {
+    link: link,
+    restrict: 'A'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs) {
+    element.bind('click', $security.logout);
+  }
+}
+
+function bindUser ($security) {
+  var directive = {
+    link: link,
+    restrict: 'A'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs) {
+    scope.$watch(function () {
+      return $security.getUser();
+    }, function (user) {
+      element.text(user[attrs.ngBindUser])
+    }, true);
+  }
+}
+
+function submitLogin ($security,  $parse) {
+  var directive = {
+    link: link,
+    restrict: 'A',
+    require: '^form'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs, formCtrl) {
+    element.bind('submit', function () {
+      var url = attrs.ngSubmitLogin,
+          fields = element.find('input'),
+          credentials = {};
+      angular.forEach(fields, function (input) {
+        if (input.type !== 'submit' && !!input.name) {
+          credentials[input.name] = input.value;
+        }
+      })
+      $security.loginByUrl(url, credentials);
     });
   }
 }
@@ -201,7 +276,8 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     hasAnyPermission: hasAnyPermission,
     getPermissionValidation: getPermissionValidation,
     isAuthenticated: isAuthenticated,
-    getUser: getUser
+    getUser: getUser,
+    getPermissions: getPermissions
   }, authStrategy = {
     'jwt': authStrategyJWT,
     'simple': authStrategySimple
@@ -305,6 +381,10 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   function getUser () {
     return $cookies.getObject($securityConfig.storageName.user);
+  }
+
+  function getPermissions () {
+    return $cookies.getObject($securityConfig.storageName.permissions);
   }
 }
 
