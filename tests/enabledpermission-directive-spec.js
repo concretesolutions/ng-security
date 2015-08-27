@@ -97,4 +97,22 @@ describe('Directive:ifAnonymous', function () {
 
     assert.isDefined(element.attr('disabled'));
   });
+
+  it('should enabled element after user logout', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {}, ['admin']);
+
+    var element = $compile([
+      '<button ng-enabled-permission="admin">',
+        'Add User',
+      '</button>'
+    ].join())($rootScope);
+
+    $rootScope.$digest();
+
+    $security.logout();
+
+    $rootScope.$digest();
+
+    assert.isDefined(element.attr('disabled'));
+  });
 });

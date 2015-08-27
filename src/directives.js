@@ -135,17 +135,17 @@ function enabledPermission ($security) {
 
   /** implementation */
   function link (scope, element, attrs) {
-    var permissionType = attrs.ngPermissionType;
+    var permissionType = attrs.ngPermissionType,
+        permissions = attrs.ngEnabledPermission.split(',');
 
     scope.$watch(function () {
-      return attrs.ngEnabledPermission;
-    }, function (permission) {
-      var permissions = permission.split(',');
+      return $security.getPermissions();
+    }, function () {
       if ($security.getPermissionValidation(permissionType)(permissions)) {
         element.removeAttr('disabled');
       } else {
         element.attr('disabled', 'true');
       }
-    });
+    }, true);
   }
 }
