@@ -72,17 +72,18 @@ function ifPermission ($security) {
   /** implementation */
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display'),
-        permissionType = attrs.ngPermissionType;
+        permissionType = attrs.ngPermissionType,
+        permissions = attrs.ngIfPermission.split(',');
+
     scope.$watch(function () {
-      return attrs.ngIfPermission;
-    }, function (permission) {
-      var permissions = permission.split(',');
+      return $security.getPermissions();
+    }, function () {
       if ($security.getPermissionValidation(permissionType)(permissions)) {
         element.css('display', defaultStyle);
       } else {
         element.css('display', 'none');
       }
-    });
+    }, true);
   }
 }
 
