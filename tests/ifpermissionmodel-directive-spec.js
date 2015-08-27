@@ -115,4 +115,21 @@ describe('Directive:ifPermissionModel', function () {
 
     assert.equal(element.css('display'), 'none');
   });
+
+  it('should hide element after user logout', function () {
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {}, ['admin']);
+    $rootScope.permission = 'admin';
+    var element = $compile([
+      '<div ng-if-permission-model="permission">',
+      '</div>'
+    ].join())($rootScope);
+
+    $rootScope.$digest();
+
+    $security.logout();
+    
+    $rootScope.$digest();
+
+    assert.equal(element.css('display'), 'none');
+  });
 });

@@ -101,15 +101,26 @@ function ifPermissionModel ($security, $parse) {
     var defaultStyle = element.css('display'),
         permissionType = attrs.ngPermissionType;
 
+    var updateElement = function (permissions) {
+        if ($security.hasPermission(permissions) || $security.getPermissionValidation(permissionType)(permissions)) {
+          element.css('display', defaultStyle);
+        } else {
+          element.css('display', 'none');
+        }
+    }
+
     scope.$watch(function () {
       return $parse(attrs.ngIfPermissionModel)(scope);
     }, function (permissions) {
-      if ($security.hasPermission(permissions) || $security.getPermissionValidation(permissionType)(permissions)) {
-        element.css('display', defaultStyle);
-      } else {
-        element.css('display', 'none');
-      }
+      updateElement(permissions);
     });
+
+    scope.$watch(function () {
+      return $security.getPermissions();
+    }, function () {
+      var permissions = $parse(attrs.ngIfPermissionModel)(scope);
+      updateElement(permissions);
+    }, true);
   }
 }
 
