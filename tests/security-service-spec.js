@@ -75,6 +75,18 @@ describe('Service:security', function () {
       password: 'admin'
     });
 
+    $httpBackend.expectPOST('/api/auth', {
+      username: 'admin',
+      password: 'admin'
+    }).respond(201, {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      user: {
+        name: 'Patrick Porto'
+      },
+      permissions: [
+        'admin'
+      ]
+    });
     $httpBackend.flush();
 
     assert.equal($cookies.get('ng-security-authorization'), 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
