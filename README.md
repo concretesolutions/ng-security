@@ -1,6 +1,6 @@
 # ngSecurity #
 
-[![Build status][build-status-image]][build-status-url] [![Watch dependencies][dependencies-image]][dependencies-url] [![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-image]][npm-url] [![MIT License][license-image]][license-url]
+[![Build status][build-status-image]][build-status-url] [![Watch dependencies][dependencies-image]][dependencies-url] [![Watch dev dependencies][devDependencies-image]][devDependencies-url] [![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-image]][npm-url] [![MIT License][license-image]][license-url]
 
 #### A security module for [AngularJS](http://angularjs.org). ####
 
@@ -335,6 +335,9 @@ angular
 
 [dependencies-image]: https://david-dm.org/concretesolutions/ng-security.svg
 [dependencies-url]: https://david-dm.org/concretesolutions/ng-security
+
+[devDependencies-image]: https://david-dm.org/concretesolutions/ng-security/dev-status.svg
+[devDependencies-url]: https://david-dm.org/concretesolutions/ng-security#info=devDependencies
 
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]: LICENSE
