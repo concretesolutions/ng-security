@@ -8,7 +8,8 @@ angular
   .directive('ngClickLogout', clickLogout)
   .directive('ngBindUser', bindUser)
   .directive('ngSubmitLogin', submitLogin)
-  .directive('ngShowLoginSuccess', showLoginSuccess);
+  .directive('ngShowLoginSuccess', showLoginSuccess)
+  .directive('ngShowLoginError', showLoginError);
 
 ifAuthenticated.$inject = ['$security'];
 ifAnonymous.$inject = ['$security'];
@@ -19,6 +20,7 @@ clickLogout.$inject = ['$security'];
 bindUser.$inject = ['$security'];
 submitLogin.$inject = ['$rootScope', '$security', '$parse'];
 showLoginSuccess.$inject = ['$rootScope'];
+showLoginError.$inject = ['$rootScope'];
 
 function ifAuthenticated ($security) {
   /** interface */
@@ -245,6 +247,30 @@ function showLoginSuccess ($rootScope) {
 
     $rootScope.$on('ng-security:login:error', function () {
       element.css('display', 'none');
+    });
+  }
+}
+
+function showLoginError ($rootScope) {
+  /** interface */
+  var directive = {
+    link: link,
+    restrict: 'AEC'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs, formCtrl) {
+    var defaultStyle = element.css('display');
+    element.css('display', 'none');
+
+    $rootScope.$on('ng-security:login:success', function () {
+      element.css('display', 'none');
+    });
+
+    $rootScope.$on('ng-security:login:error', function () {
+      element.css('display', defaultStyle);
     });
   }
 }
