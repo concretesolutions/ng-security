@@ -113,7 +113,7 @@ function ifPermissionModel ($security, $parse) {
         } else {
           element.css('display', 'none');
         }
-    }
+    };
 
     scope.$watch(function () {
       return $parse(attrs.ngIfPermissionModel)(scope);
@@ -183,7 +183,7 @@ function bindUser ($security) {
     scope.$watch(function () {
       return $security.getUser();
     }, function (user) {
-      element.text(user[attrs.ngBindUser])
+      element.text(user[attrs.ngBindUser]);
     }, true);
   }
 }
@@ -207,7 +207,7 @@ function submitLogin ($security,  $parse) {
         if (input.type !== 'submit' && !!input.name) {
           credentials[input.name] = input.value;
         }
-      })
+      });
       $security.loginByUrl(url, credentials);
     });
   }
