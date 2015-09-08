@@ -7,7 +7,8 @@ angular
   .directive('ngEnabledPermission', enabledPermission)
   .directive('ngClickLogout', clickLogout)
   .directive('ngBindUser', bindUser)
-  .directive('ngSubmitLogin', submitLogin);
+  .directive('ngSubmitLogin', submitLogin)
+  .directive('ngShowLoginSuccess', showLoginSuccess);
 
 ifAuthenticated.$inject = ['$security'];
 ifAnonymous.$inject = ['$security'];
@@ -16,7 +17,8 @@ ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
 clickLogout.$inject = ['$security'];
 bindUser.$inject = ['$security'];
-submitLogin.$inject = ['$security', '$parse'];
+submitLogin.$inject = ['$rootScope', '$security', '$parse'];
+showLoginSuccess.$inject = ['$rootScope'];
 
 function ifAuthenticated ($security) {
   /** interface */
@@ -157,6 +159,7 @@ function enabledPermission ($security) {
 }
 
 function clickLogout ($security) {
+  /** interface */
   var directive = {
     link: link,
     restrict: 'A'
@@ -171,6 +174,7 @@ function clickLogout ($security) {
 }
 
 function bindUser ($security) {
+  /** interface */
   var directive = {
     link: link,
     restrict: 'A'
@@ -188,7 +192,8 @@ function bindUser ($security) {
   }
 }
 
-function submitLogin ($security,  $parse) {
+function submitLogin ($rootScope, $security,  $parse) {
+  /** interface */
   var directive = {
     link: link,
     restrict: 'A',
@@ -208,7 +213,38 @@ function submitLogin ($security,  $parse) {
           credentials[input.name] = input.value;
         }
       });
-      $security.loginByUrl(url, credentials);
+
+      $security.loginByUrl(url, credentials)
+        .then(function () {
+          $rootScope.$broadcast('ng-security:login:success');
+        })
+        .catch(function () {
+          $rootScope.$broadcast('ng-security:login:error');
+        });
+    });
+  }
+}
+
+function showLoginSuccess ($rootScope) {
+  /** interface */
+  var directive = {
+    link: link,
+    restrict: 'AEC'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs, formCtrl) {
+    var defaultStyle = element.css('display');
+    element.css('display', 'none');
+
+    $rootScope.$on('ng-security:login:success', function () {
+      element.css('display', defaultStyle);
+    });
+
+    $rootScope.$on('ng-security:login:error', function () {
+      element.css('display', 'none');
     });
   }
 }
