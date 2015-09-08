@@ -18,7 +18,7 @@ ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
 clickLogout.$inject = ['$security'];
 bindUser.$inject = ['$security'];
-submitLogin.$inject = ['$rootScope', '$security', '$parse'];
+submitLogin.$inject = ['$rootScope', '$security'];
 showLoginSuccess.$inject = ['$rootScope'];
 showLoginError.$inject = ['$rootScope'];
 
@@ -194,11 +194,15 @@ function bindUser ($security) {
   }
 }
 
-function submitLogin ($rootScope, $security,  $parse) {
+function submitLogin ($rootScope, $security) {
   /** interface */
   var directive = {
     link: link,
     restrict: 'A',
+    scope: {
+      'ngLoginSuccess': '&',
+      'ngLoginError': '&'
+    },
     require: '^form'
   };
 
@@ -217,13 +221,13 @@ function submitLogin ($rootScope, $security,  $parse) {
       });
 
       $security.loginByUrl(url, credentials)
-        .then(function () {
+        .then(function (response) {
           $rootScope.$broadcast('ng-security:login:success');
-          $parse(attrs.ngLoginSuccess)(scope);
+          scope.ngLoginSuccess({$response: response});
         })
-        .catch(function () {
+        .catch(function (response) {
           $rootScope.$broadcast('ng-security:login:error');
-          $parse(attrs.ngLoginError)(scope);
+          scope.ngLoginError({$response: response});
         });
     });
   }
