@@ -56,4 +56,35 @@ describe('Directive:submitLogin', function () {
     assert.isTrue($security.isAuthenticated());
     assert.equal($security.getUser().name, 'Patrick Porto');
   });
+
+  it('should call ng-login-success when success login', function () {
+    $rootScope.success = function () {  };
+    var loginSuccess = sinon.spy($rootScope, 'success');
+    var element = $compile([
+      '<form ng-submit-login="/api/auth" ng-login-success="success()">',
+        '<input type="text" name="username" value="admin" />',
+        '<input type="password" name="password" value="admin" />',
+        '<button type="submit">Login</button>',
+      '</form>'
+    ].join())($rootScope);
+
+    element.triggerHandler('submit');
+
+    $httpBackend.expectPOST('/api/auth', {
+      username: 'admin',
+      password: 'admin'
+    }).respond(201, {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      user: {
+        name: 'Patrick Porto'
+      },
+      permissions: [
+        'admin'
+      ]
+    });
+
+    $httpBackend.flush();
+
+    assert.isTrue(loginSuccess.called);
+  });
 });

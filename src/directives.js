@@ -219,6 +219,7 @@ function submitLogin ($rootScope, $security,  $parse) {
       $security.loginByUrl(url, credentials)
         .then(function () {
           $rootScope.$broadcast('ng-security:login:success');
+          $parse(attrs.ngLoginSuccess)(scope);
         })
         .catch(function () {
           $rootScope.$broadcast('ng-security:login:error');
