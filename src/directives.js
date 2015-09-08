@@ -223,6 +223,7 @@ function submitLogin ($rootScope, $security,  $parse) {
         })
         .catch(function () {
           $rootScope.$broadcast('ng-security:login:error');
+          $parse(attrs.ngLoginError)(scope);
         });
     });
   }

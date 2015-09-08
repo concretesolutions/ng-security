@@ -13,7 +13,7 @@ describe('Directive:submitLogin', function () {
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
 
-    $httpBackend.whenPOST('/api/auth').respond(201, {
+    $httpBackend.whenPOST('/api/auth/success').respond(201, {
       token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
       user: {
         name: 'Patrick Porto'
@@ -23,12 +23,14 @@ describe('Directive:submitLogin', function () {
       ]
     });
 
+    $httpBackend.whenPOST('/api/auth/fail').respond(403);
+
     $security.logout();
   }));
 
   it('should login by url', function () {
     var element = $compile([
-      '<form ng-submit-login="/api/auth">',
+      '<form ng-submit-login="/api/auth/success">',
         '<input type="text" name="username" value="admin" />',
         '<input type="password" name="password" value="admin" />',
         '<button type="submit">Login</button>',
@@ -38,7 +40,7 @@ describe('Directive:submitLogin', function () {
     element.triggerHandler('submit');
 
 
-    $httpBackend.expectPOST('/api/auth', {
+    $httpBackend.expectPOST('/api/auth/success', {
       username: 'admin',
       password: 'admin'
     }).respond(201, {
@@ -61,7 +63,7 @@ describe('Directive:submitLogin', function () {
     $rootScope.success = function () {  };
     var loginSuccess = sinon.spy($rootScope, 'success');
     var element = $compile([
-      '<form ng-submit-login="/api/auth" ng-login-success="success()">',
+      '<form ng-submit-login="/api/auth/success" ng-login-success="success()">',
         '<input type="text" name="username" value="admin" />',
         '<input type="password" name="password" value="admin" />',
         '<button type="submit">Login</button>',
@@ -70,7 +72,7 @@ describe('Directive:submitLogin', function () {
 
     element.triggerHandler('submit');
 
-    $httpBackend.expectPOST('/api/auth', {
+    $httpBackend.expectPOST('/api/auth/success', {
       username: 'admin',
       password: 'admin'
     }).respond(201, {
@@ -86,5 +88,28 @@ describe('Directive:submitLogin', function () {
     $httpBackend.flush();
 
     assert.isTrue(loginSuccess.called);
+  });
+
+  it('should call ng-login-success when success login', function () {
+    $rootScope.error = function () {  };
+    var loginError = sinon.spy($rootScope, 'error');
+    var element = $compile([
+      '<form ng-submit-login="/api/auth/fail" ng-login-error="error()">',
+        '<input type="text" name="username" value="admin" />',
+        '<input type="password" name="password" value="admin" />',
+        '<button type="submit">Login</button>',
+      '</form>'
+    ].join())($rootScope);
+
+    element.triggerHandler('submit');
+
+    $httpBackend.expectPOST('/api/auth/fail', {
+      username: 'admin',
+      password: 'admin'
+    }).respond(403);
+
+    $httpBackend.flush();
+
+    assert.isTrue(loginError.called);
   });
 });
