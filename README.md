@@ -296,10 +296,16 @@ The directive replace the text content of the specified HTML element with the us
 ```
 
 #### ng-submit-login="\<url: String\>" (Attribute only)  ####
-The directive login user when submit form.  
+The directive login user when submit form. It calls back *ng-login-success* when success to login, and calls back *ng-login-error* when fail to login.  
 
 ```html
-<form ng-submit-login="/api/auth">
+<form ng-submit-login="/api/auth" ng-login-success="success($response)" ng-login-error="error($response)">
+  <div ng-show-login-success> <!-- show the HTML element when login is successful -->
+    <p>Success!</p>
+  </div>
+  <div ng-show-login-error> <!-- show the HTML element when login failed -->
+    <p>Username or password invalid!</p>
+  </div>
   <input type="text" name="username" />
   <input type="password" name="password" />
   <button type="submit">Login</button>
