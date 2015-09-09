@@ -1,5 +1,5 @@
 /*
- ngsecurity v1.3.0
+ ngsecurity v1.4.0
  (c) 2015 Concrete Solutions, Inc.
  License: MIT
 */
@@ -17,7 +17,9 @@ angular
   .directive('ngEnabledPermission', enabledPermission)
   .directive('ngClickLogout', clickLogout)
   .directive('ngBindUser', bindUser)
-  .directive('ngSubmitLogin', submitLogin);
+  .directive('ngSubmitLogin', submitLogin)
+  .directive('ngShowLoginSuccess', showLoginSuccess)
+  .directive('ngShowLoginError', showLoginError);
 
 ifAuthenticated.$inject = ['$security'];
 ifAnonymous.$inject = ['$security'];
@@ -26,7 +28,9 @@ ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
 clickLogout.$inject = ['$security'];
 bindUser.$inject = ['$security'];
-submitLogin.$inject = ['$security', '$parse'];
+submitLogin.$inject = ['$rootScope', '$security'];
+showLoginSuccess.$inject = ['$rootScope'];
+showLoginError.$inject = ['$rootScope'];
 
 function ifAuthenticated ($security) {
   /** interface */
@@ -123,7 +127,7 @@ function ifPermissionModel ($security, $parse) {
         } else {
           element.css('display', 'none');
         }
-    }
+    };
 
     scope.$watch(function () {
       return $parse(attrs.ngIfPermissionModel)(scope);
@@ -167,6 +171,7 @@ function enabledPermission ($security) {
 }
 
 function clickLogout ($security) {
+  /** interface */
   var directive = {
     link: link,
     restrict: 'A'
@@ -181,6 +186,7 @@ function clickLogout ($security) {
 }
 
 function bindUser ($security) {
+  /** interface */
   var directive = {
     link: link,
     restrict: 'A'
@@ -193,15 +199,20 @@ function bindUser ($security) {
     scope.$watch(function () {
       return $security.getUser();
     }, function (user) {
-      element.text(user[attrs.ngBindUser])
+      element.text(user[attrs.ngBindUser]);
     }, true);
   }
 }
 
-function submitLogin ($security,  $parse) {
+function submitLogin ($rootScope, $security) {
+  /** interface */
   var directive = {
     link: link,
     restrict: 'A',
+    scope: {
+      'ngLoginSuccess': '&',
+      'ngLoginError': '&'
+    },
     require: '^form'
   };
 
@@ -217,8 +228,65 @@ function submitLogin ($security,  $parse) {
         if (input.type !== 'submit' && !!input.name) {
           credentials[input.name] = input.value;
         }
-      })
-      $security.loginByUrl(url, credentials);
+      });
+
+      $security.loginByUrl(url, credentials)
+        .then(function (response) {
+          $rootScope.$broadcast('ng-security:login:success');
+          scope.ngLoginSuccess({$response: response});
+        })
+        .catch(function (response) {
+          $rootScope.$broadcast('ng-security:login:error');
+          scope.ngLoginError({$response: response});
+        });
+    });
+  }
+}
+
+function showLoginSuccess ($rootScope) {
+  /** interface */
+  var directive = {
+    link: link,
+    restrict: 'AEC'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs, formCtrl) {
+    var defaultStyle = element.css('display');
+    element.css('display', 'none');
+
+    $rootScope.$on('ng-security:login:success', function () {
+      element.css('display', defaultStyle);
+    });
+
+    $rootScope.$on('ng-security:login:error', function () {
+      element.css('display', 'none');
+    });
+  }
+}
+
+function showLoginError ($rootScope) {
+  /** interface */
+  var directive = {
+    link: link,
+    restrict: 'AEC'
+  };
+
+  return directive;
+
+  /** implementation */
+  function link (scope, element, attrs, formCtrl) {
+    var defaultStyle = element.css('display');
+    element.css('display', 'none');
+
+    $rootScope.$on('ng-security:login:success', function () {
+      element.css('display', 'none');
+    });
+
+    $rootScope.$on('ng-security:login:error', function () {
+      element.css('display', defaultStyle);
     });
   }
 }
