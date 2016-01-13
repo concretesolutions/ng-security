@@ -11,8 +11,8 @@ angular
   .directive('ngShowLoginSuccess', showLoginSuccess)
   .directive('ngShowLoginError', showLoginError);
 
-ifAuthenticated.$inject = ['$security'];
-ifAnonymous.$inject = ['$security'];
+ifAuthenticated.$inject = ['$security', '$animate'];
+ifAnonymous.$inject = ['$security', '$animate'];
 ifPermission.$inject = ['$security'];
 ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
@@ -22,50 +22,52 @@ submitLogin.$inject = ['$rootScope', '$security'];
 showLoginSuccess.$inject = ['$rootScope'];
 showLoginError.$inject = ['$rootScope'];
 
-function ifAuthenticated ($security) {
+function ifAuthenticated ($security, $animate) {
   /** interface */
   var directive = {
-    link: link,
-    restrict: 'A'
+    multiElement: true,
+    transclude: 'element',
+    priority: 600,
+    terminal: true,
+    restrict: 'A',
+    $$tlb: true,
+    link: link
   };
 
   return directive;
 
   /** implementation */
-  function link (scope, element, attrs) {
-    var defaultStyle = element.css('display');
+  function link (scope, element, attrs, ctrl, transclude) {
+    var render = new RenderHandler(scope, element, attrs, ctrl, transclude, $animate);
     scope.$watch(function () {
       return $security.isAuthenticated();
     }, function (authorization) {
-      if (authorization) {
-        element.css('display', defaultStyle);
-      } else {
-        element.css('display', 'none');
-      }
+        render.handle(authorization);
     });
   }
 }
 
-function ifAnonymous ($security) {
+function ifAnonymous ($security,  $animate) {
   /** interface */
   var directive = {
-    link: link,
-    restrict: 'A'
+    multiElement: true,
+    transclude: 'element',
+    priority: 600,
+    terminal: true,
+    restrict: 'A',
+    $$tlb: true,
+    link: link
   };
 
   return directive;
 
   /** implementation */
-  function link (scope, element, attrs) {
-    var defaultStyle = element.css('display');
+  function link (scope, element, attrs, ctrl, transclude) {
+    var render = new RenderHandler(scope, element, attrs, ctrl, transclude, $animate);
     scope.$watch(function () {
       return $security.isAuthenticated();
     }, function (authorization) {
-      if (authorization) {
-        element.css('display', 'none');
-      } else {
-        element.css('display', defaultStyle);
-      }
+        render.handle(!authorization);
     });
   }
 }
@@ -280,3 +282,45 @@ function showLoginError ($rootScope) {
     });
   }
 }
+
+
+//render class
+function RenderHandler(scope, element, attrs, ctrl, transclude, $animate) {
+  var block, childScope, previousElements;
+
+  this.handle = function (expression) {
+    if (expression) {
+      if (!childScope) {
+        transclude(function(clone, newScope) {
+          childScope = newScope;
+          clone[clone.length++] = document.createComment(' end ng-securityIf');
+          // Note: We only need the first/last node of the cloned nodes.
+          // However, we need to keep the reference to the jqlite wrapper as it might be changed later
+          // by a directive with templateUrl when its template arrives.
+          block = {
+            clone: clone
+          };
+          $animate.enter(clone, element.parent(), element);
+        });
+      }
+    }
+    else{
+      if (previousElements) {
+        previousElements.remove();
+        previousElements = null;
+      }
+      if (childScope) {
+        childScope.$destroy();
+        childScope = null;
+      }
+      if (block) {
+        previousElements = getBlockNodes(block.clone);
+        $animate.leave(previousElements).then(function() {
+          previousElements = null;
+        });
+        block = null;
+      }
+    }
+  };
+
+};
