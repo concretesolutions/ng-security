@@ -45,7 +45,7 @@ gulp.task('dist', function () {
     }))
     .pipe(gulp.dest('dist'))
     .pipe(closureCompiler({
-      compilerPath: 'node_modules/closure-compiler/lib/vendor/compiler.jar',
+      compilerPath: 'node_modules/closure-compiler/node_modules/google-closure-compiler/compiler.jar',
       fileName: config.name + '.min.js',
       compilerFlags: {
         /*jshint camelcase: false */
