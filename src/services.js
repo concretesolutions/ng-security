@@ -3,10 +3,10 @@ angular
   .factory('$security', securityFactory)
   .factory('$securityInterceptor', securityInterceptor);
 
-securityFactory.$inject = ['$cookies', '$q', '$http', '$securityConfig'];
+securityFactory.$inject = ['$rootScope','$cookies', '$q', '$http', '$securityConfig' ];
 securityInterceptor.$inject = ['$rootScope', '$q', '$cookies', '$securityConfig'];
 
-function securityFactory ($cookies, $q, $http, $securityConfig) {
+function securityFactory ($rootScope, $cookies, $q, $http, $securityConfig) {
   /** interface */
   var security = {
     login: login,
@@ -28,7 +28,8 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   /** implementation */
   function login () {
-    return authStrategy[$securityConfig.strategy].apply(this, arguments);
+    authStrategy[$securityConfig.strategy].apply(this, arguments);
+    return $rootScope.$emit('authChanged', security.isAuthenticated());
   }
 
   function authStrategyJWT(token, permissions) {
@@ -58,6 +59,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     return $q(function (resolve, reject) {
       $http.post(url, data).success(function (data) {
         security.login(data.token, data.user, data.permissions);
+        $rootScope.$emit('authChanged', security.isAuthenticated());
         resolve(data);
       }).error(reject);
     });
@@ -67,6 +69,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     $cookies.remove($securityConfig.storageName.token);
     $cookies.remove($securityConfig.storageName.user);
     $cookies.remove($securityConfig.storageName.permissions);
+    $rootScope.$emit('authChanged', security.isAuthenticated());
   }
 
   function hasPermission (permissionRequired) {
