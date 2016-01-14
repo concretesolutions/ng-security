@@ -1,11 +1,9 @@
 {
   "name": "ngsecurity",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A security module for AngularJS.",
   "main": [
-    "dist/ngsecurity.js",
-    "dist/ngsecurity.min.js",
-    "dist/ngsecurity.min.js.map"
+    "dist/ngsecurity.js"
   ],
   "authors": [
     "Patrick Porto <patrick.porto@concretesolutions.com.br>"
