@@ -39,9 +39,11 @@ function ifAuthenticated ($security, $animate, $rootScope) {
   /** implementation */
   function link (scope, element, attrs, ctrl, transclude) {
     var render = new RenderHandler(scope, element, attrs, ctrl, transclude, $animate);
-    var deregister = $rootScope.$on('authChanged', function (event, status) {
+    scope.deregister = $rootScope.$on('authChanged', function (event, status) {
       render.handle(status);
-
+    });
+    scope.$on('$destroy', function(){
+      scope.deregister();
     });
     render.handle($security.isAuthenticated());
   }
@@ -64,9 +66,11 @@ function ifAnonymous ($security,  $animate,  $rootScope) {
   /** implementation */
   function link (scope, element, attrs, ctrl, transclude) {
     var render = new RenderHandler(scope, element, attrs, ctrl, transclude, $animate);
-    var deregister = $rootScope.$on('authChanged', function (event, status) {
+    scope.deregister = $rootScope.$on('authChanged', function (event, status) {
       render.handle(!status);
-
+    });
+    scope.$on('$destroy', function(){
+      scope.deregister();
     });
     render.handle(!$security.isAuthenticated());
   }
