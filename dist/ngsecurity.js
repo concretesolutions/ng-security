@@ -1,5 +1,5 @@
 /*
- ngsecurity v1.4.0
+ ngsecurity v1.5.1
  (c) 2015 Concrete Solutions, Inc.
  License: MIT
 */
@@ -21,8 +21,8 @@ angular
   .directive('ngShowLoginSuccess', showLoginSuccess)
   .directive('ngShowLoginError', showLoginError);
 
-ifAuthenticated.$inject = ['$security'];
-ifAnonymous.$inject = ['$security'];
+ifAuthenticated.$inject = ['$security', '$animate', '$rootScope'];
+ifAnonymous.$inject = ['$security', '$animate', '$rootScope'];
 ifPermission.$inject = ['$security'];
 ifPermissionModel.$inject = ['$security', '$parse'];
 enabledPermission.$inject = ['$security'];
@@ -32,51 +32,57 @@ submitLogin.$inject = ['$rootScope', '$security'];
 showLoginSuccess.$inject = ['$rootScope'];
 showLoginError.$inject = ['$rootScope'];
 
-function ifAuthenticated ($security) {
+function ifAuthenticated ($security, $animate, $rootScope) {
   /** interface */
   var directive = {
-    link: link,
-    restrict: 'A'
+    multiElement: true,
+    transclude: 'element',
+    priority: 600,
+    terminal: true,
+    restrict: 'A',
+    $$tlb: true,
+    link: link
   };
 
   return directive;
 
   /** implementation */
-  function link (scope, element, attrs) {
-    var defaultStyle = element.css('display');
-    scope.$watch(function () {
-      return $security.isAuthenticated();
-    }, function (authorization) {
-      if (authorization) {
-        element.css('display', defaultStyle);
-      } else {
-        element.css('display', 'none');
-      }
+  function link (scope, element, attrs, ctrl, transclude) {
+    var render = new RenderHandler(scope, element, attrs, ctrl, transclude, $animate);
+    scope.deregister = $rootScope.$on('authChanged', function (event, status) {
+      render.handle(status);
     });
+    scope.$on('$destroy', function(){
+      scope.deregister();
+    });
+    render.handle($security.isAuthenticated());
   }
 }
 
-function ifAnonymous ($security) {
+function ifAnonymous ($security,  $animate,  $rootScope) {
   /** interface */
   var directive = {
-    link: link,
-    restrict: 'A'
+    multiElement: true,
+    transclude: 'element',
+    priority: 600,
+    terminal: true,
+    restrict: 'A',
+    $$tlb: true,
+    link: link
   };
 
   return directive;
 
   /** implementation */
-  function link (scope, element, attrs) {
-    var defaultStyle = element.css('display');
-    scope.$watch(function () {
-      return $security.isAuthenticated();
-    }, function (authorization) {
-      if (authorization) {
-        element.css('display', 'none');
-      } else {
-        element.css('display', defaultStyle);
-      }
+  function link (scope, element, attrs, ctrl, transclude) {
+    var render = new RenderHandler(scope, element, attrs, ctrl, transclude, $animate);
+    scope.deregister = $rootScope.$on('authChanged', function (event, status) {
+      render.handle(!status);
     });
+    scope.$on('$destroy', function(){
+      scope.deregister();
+    });
+    render.handle(!$security.isAuthenticated());
   }
 }
 
@@ -291,6 +297,67 @@ function showLoginError ($rootScope) {
   }
 }
 
+
+//render class
+function RenderHandler(scope, element, attrs, ctrl, transclude, $animate) {
+  var block, childScope, previousElements;
+
+
+
+  this.handle = function (expression) {
+    if (expression) {
+      if (!childScope) {
+        transclude(function(clone, newScope) {
+          childScope = newScope;
+          clone[clone.length++] = document.createComment(' end ng-securityIf');
+          // Note: We only need the first/last node of the cloned nodes.
+          // However, we need to keep the reference to the jqlite wrapper as it might be changed later
+          // by a directive with templateUrl when its template arrives.
+          block = {
+            clone: clone
+          };
+          $animate.enter(clone, element.parent(), element);
+        });
+      }
+    }
+    else{
+      if (previousElements) {
+        previousElements.remove();
+        previousElements = null;
+      }
+      if (childScope) {
+        childScope.$destroy();
+        childScope = null;
+      }
+      if (block) {
+        previousElements = getBlockNodes(block.clone);
+        $animate.leave(previousElements).then(function() {
+          previousElements = null;
+        });
+        block = null;
+      }
+    }
+  };
+
+  function getBlockNodes(nodes) {
+    var node = nodes[0];
+    var endNode = nodes[nodes.length - 1];
+    var blockNodes;
+
+    for (var i = 1; node !== endNode && (node = node.nextSibling); i++) {
+      if (blockNodes || nodes[i] !== node) {
+        if (!blockNodes) {
+          blockNodes = jqLite(slice.call(nodes, 0, i));
+        }
+        blockNodes.push(node);
+      }
+    }
+
+    return blockNodes || nodes;
+  }
+
+};
+
 angular
   .module('ngSecurity')
   .provider('$securityConfig', securityConfigProvider);
@@ -330,10 +397,10 @@ angular
   .factory('$security', securityFactory)
   .factory('$securityInterceptor', securityInterceptor);
 
-securityFactory.$inject = ['$cookies', '$q', '$http', '$securityConfig'];
+securityFactory.$inject = ['$rootScope','$cookies', '$q', '$http', '$securityConfig' ];
 securityInterceptor.$inject = ['$rootScope', '$q', '$cookies', '$securityConfig'];
 
-function securityFactory ($cookies, $q, $http, $securityConfig) {
+function securityFactory ($rootScope, $cookies, $q, $http, $securityConfig) {
   /** interface */
   var security = {
     login: login,
@@ -355,7 +422,8 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
 
   /** implementation */
   function login () {
-    return authStrategy[$securityConfig.strategy].apply(this, arguments);
+    authStrategy[$securityConfig.strategy].apply(this, arguments);
+    return $rootScope.$emit('authChanged', security.isAuthenticated());
   }
 
   function authStrategyJWT(token, permissions) {
@@ -385,6 +453,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     return $q(function (resolve, reject) {
       $http.post(url, data).success(function (data) {
         security.login(data.token, data.user, data.permissions);
+        $rootScope.$emit('authChanged', security.isAuthenticated());
         resolve(data);
       }).error(reject);
     });
@@ -394,6 +463,7 @@ function securityFactory ($cookies, $q, $http, $securityConfig) {
     $cookies.remove($securityConfig.storageName.token);
     $cookies.remove($securityConfig.storageName.user);
     $cookies.remove($securityConfig.storageName.permissions);
+    $rootScope.$emit('authChanged', security.isAuthenticated());
   }
 
   function hasPermission (permissionRequired) {

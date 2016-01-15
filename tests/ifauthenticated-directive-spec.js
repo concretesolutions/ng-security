@@ -7,11 +7,6 @@ describe('Directive:ifAuthenticated', function () {
       $rootScope,
       element;
 
-  var html = [
-      '<div ng-if-authenticated>',
-      '</div>'
-    ].join();
-
   beforeEach(inject(function ($injector) {
     $security = $injector.get('$security');
     $compile = $injector.get('$compile');
@@ -19,24 +14,32 @@ describe('Directive:ifAuthenticated', function () {
 
     $security.logout();
 
-    element = $compile('<div></div>')($rootScope);
+    element = $compile('<div><div ng-if-authenticated></div></div>')($rootScope);
   }));
 
-  it('should show element if user is authenticated', function () {
+  it('should render element if user is authenticated', function () {
     $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
 
-    element.append($compile(html)($rootScope));
-
     $rootScope.$digest();
-
     assert.equal(element.children().length, 1);
   });
 
-  it('should hide element if user not is authenticated', function () {
-    element = element.append($compile(html)($rootScope));
-
+  it('should not render element if user not is authenticated', function () {
+    $security.logout();
     $rootScope.$digest();
+    assert.equal(element.children().length, 0);
+  });
 
+  it('should deregister eventlistener "authChanged" on destroyed scope', function () {
+    $rootScope.$digest();
+    var deregister = sinon.spy($rootScope, 'deregister');
+
+    $rootScope.$destroy();
+    assert(deregister.calledOnce);
+
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
+
+    //element should not be rendered
     assert.equal(element.children().length, 0);
   });
 });

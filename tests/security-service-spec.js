@@ -5,16 +5,19 @@ describe('Service:security', function () {
   var $cookies,
       $security,
       $httpBackend,
+      $rootScope,
       provider;
 
   beforeEach(module(function ($securityConfigProvider) {
     provider = $securityConfigProvider;
+
   }));
 
   beforeEach(inject(function ($injector) {
     $cookies = $injector.get('$cookies');
     $security = $injector.get('$security');
     $httpBackend = $injector.get('$httpBackend');
+    $rootScope = $injector.get('$rootScope');
 
     $httpBackend.whenPOST('/api/auth', {
       username: 'admin',
@@ -94,6 +97,14 @@ describe('Service:security', function () {
     assert.include($cookies.getObject('ng-security-permissions'), 'admin');
   });
 
+  it('should emit authChanged when logged in', function () {
+    var emit = sinon.spy($rootScope, '$emit');
+    $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
+      name: 'Patrick Porto'
+    });
+    emit.calledWith('authChanged', true).should.be.ok;
+  });
+
   it('should logout user', function () {
     $security.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', {
       name: 'Patrick Porto'
@@ -101,11 +112,13 @@ describe('Service:security', function () {
       'admin',
       'staff'
     ]);
+    var emit = sinon.spy($rootScope, '$emit');
     $security.logout();
 
     assert.isUndefined($cookies.get('ng-security-authorization'));
     assert.isUndefined($cookies.get('ng-security-user'));
     assert.isUndefined($cookies.get('ng-security-permissions'));
+    emit.calledWith('authChanged', false).should.be.ok;
   });
 
   it('should verify if user has permission', function () {
