@@ -43,7 +43,7 @@ function securityFactory ($rootScope, $cookies, $q, $http, $securityConfig) {
     } else if ((userEncoded.length % 4) !== 0) {
       throw 'Invalid token string.';
     }
-    user = JSON.parse(atob(userEncoded + '=='));
+    user = JSON.parse(atob(userEncoded));
     $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
     $cookies.putObject($securityConfig.storageName.user, user);
     $cookies.putObject($securityConfig.storageName.permissions, permissions);
