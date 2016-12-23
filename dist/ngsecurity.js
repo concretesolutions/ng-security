@@ -1,5 +1,5 @@
 /*
- ngsecurity v1.5.1
+ ngsecurity v1.6.0
  (c) 2015 Concrete Solutions, Inc.
  License: MIT
 */
@@ -437,7 +437,7 @@ function securityFactory ($rootScope, $cookies, $q, $http, $securityConfig) {
     } else if ((userEncoded.length % 4) !== 0) {
       throw 'Invalid token string.';
     }
-    user = JSON.parse(atob(userEncoded + '=='));
+    user = JSON.parse(atob(userEncoded));
     $cookies.put($securityConfig.storageName.token, $securityConfig.token.prefix + token);
     $cookies.putObject($securityConfig.storageName.user, user);
     $cookies.putObject($securityConfig.storageName.permissions, permissions);
