@@ -1,5 +1,5 @@
 /*
- ngsecurity v1.6.0
+ ngsecurity v1.6.2
  (c) 2015 Concrete Solutions, Inc.
  License: MIT
 */

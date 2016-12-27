@@ -1,10 +1,13 @@
 {
   "name": "ngsecurity",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "A security module for AngularJS.",
   "main": "index.js",
   "directories": {
     "test": "tests"
+  },
+  "scripts": {
+    "prepublish": "gulp dist"
   },
   "author": "Patrick Porto <patrick.porto@concretesolutions.com.br>",
   "copyright": "(c) 2015 Concrete Solutions, Inc.",
