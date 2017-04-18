@@ -89,7 +89,7 @@ function ifPermission ($security) {
   function link (scope, element, attrs) {
     var defaultStyle = element.css('display'),
         permissionType = attrs.ngPermissionType,
-        permissions = attrs.ngIfPermission.split(',');
+        permissions = attrs.ngIfPermission.split(/[\s,]+/);
 
     scope.$watch(function () {
       return $security.getPermissions();
@@ -152,7 +152,7 @@ function enabledPermission ($security) {
   /** implementation */
   function link (scope, element, attrs) {
     var permissionType = attrs.ngPermissionType,
-        permissions = attrs.ngEnabledPermission.split(',');
+        permissions = attrs.ngEnabledPermission.split(/[\s,]+/);
 
     scope.$watch(function () {
       return $security.getPermissions();
